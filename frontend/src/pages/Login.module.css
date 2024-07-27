@@ -1,0 +1,66 @@
+.loginContainer {
+  background-color: #1e1e1e;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+.back:link,
+.back:visited {
+  color: #fff;
+
+  position: absolute;
+  top: 75px;
+  left: 65px;
+}
+
+.backIcon {
+  height: 28px;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: var(--BLUE-COLOR);
+  border: none;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.register {
+  text-align: center;
+}
+
+.registerLink:link,
+.registerLink:visited {
+  color: var(--BLUE-COLOR);
+  text-decoration: none;
+}
+
+.triangles {
+  position: absolute;
+  left: 0;
+}
+
+.ellipse1 {
+  position: absolute;
+  bottom: 0;
+  right: 370px;
+}
+
+.ellipse2 {
+  position: absolute;
+  right: 0;
+  top: 100px;
+}
