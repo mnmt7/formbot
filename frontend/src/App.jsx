@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkAuthAsync, selectAuthUser } from "./store/auth-slice";
 import Protected from "./components/Protected";
 import Settings from "./pages/Settings";
-import Formbot from "./pages/Formbot";
+import Formbot from "./pages/FormbotV2";
 import Chat from "./pages/Chat";
 
 const router = createBrowserRouter([

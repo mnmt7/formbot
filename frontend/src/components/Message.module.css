@@ -1,0 +1,44 @@
+.message {
+  background-color: var(--DARK-COLOR);
+
+  padding: 16px;
+  border-radius: 6px;
+  position: relative;
+
+  height: 104px;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+
+  background-color: #444444;
+  border: none;
+
+  padding: 4px;
+
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.valueType {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.input {
+  border-radius: 4px;
+  border: none;
+  background-color: #1f1f23;
+  padding: 10px 16px;
+  color: #fff;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--GREY-1-COLOR);
+}

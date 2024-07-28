@@ -55,3 +55,21 @@ export const updateFormbot = async (data, id) => {
 
   return resData;
 };
+
+export const fetchFormbotResponses = async (id) => {
+  const response = await fetch(`${BACKEND_URL}/formbots/${id}/responses`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  const resData = await response.json();
+
+  console.log({ responses: resData });
+
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+
+  return resData;
+};

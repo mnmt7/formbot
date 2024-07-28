@@ -1,0 +1,167 @@
+.formbot {
+  color: #fff;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.header {
+  background-color: var(--DARK-COLOR);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.formnameInput {
+  background-color: #37373e;
+  color: #fff;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  flex-basis: 250px;
+}
+
+.tabBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.tabBtn {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.tabBtn:hover {
+  color: var(--BLUE-COLOR);
+}
+
+.tabBtnActive {
+  border: 1px solid var(--BLUE-COLOR);
+  color: var(--BLUE-COLOR);
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.shareBtn {
+  background-color: var(--GREY-1-COLOR);
+}
+
+.saveBtn {
+  background-color: #40b66c;
+}
+
+.shareBtn,
+.saveBtn {
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.shareBtn:hover,
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.closeBtn {
+  background-color: transparent;
+  border: none;
+  display: flex;
+}
+
+.closeIcon {
+  stroke: #f55050;
+  height: 20px;
+}
+
+.closeIcon:hover {
+  stroke: #ec3131;
+}
+
+.main {
+  background-color: #1f1f23;
+  padding: 16px;
+  padding-left: 366px;
+}
+
+.messagePicker {
+  background-color: var(--DARK-COLOR);
+  border-radius: 8px;
+  border: 1px solid #333;
+  padding: 0 12px;
+  position: fixed;
+  left: 16px;
+  width: 350px;
+  top: 75px;
+  bottom: 16px;
+}
+
+.bubbles {
+  margin-top: 64px;
+}
+
+.inputs {
+  margin-top: 16px;
+}
+
+.messageHeading {
+  font-weight: normal;
+}
+
+.messageBtns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.messageBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background-color: #1f1f23;
+  color: #fff;
+  padding: 8px 12px;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.messageLogo {
+  height: 16px;
+}
+
+.messages {
+  width: 300px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 64px;
+}
+
+.startMessage {
+  background-color: var(--DARK-COLOR);
+
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.startText {
+  font-size: 1.15rem;
+  font-weight: 600;
+}

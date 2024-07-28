@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Message from "../components/Message";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { createFormbot, updateFormbot, fetchFormbot } from "../api/formbot";
 import { isLength } from "validator";
 import useInput from "../hooks/useInput";
@@ -10,6 +10,8 @@ import classes from "./Formbot.module.css";
 import text from "../assets/text.svg";
 import image from "../assets/image.svg";
 import email from "../assets/email.svg";
+import Flow from "../components/Flow";
+import Response from "../components/Response";
 
 const bubbles = ["Text", "Image", "Video", "GIF"];
 
@@ -31,9 +33,13 @@ export default function Formbot() {
   //   showError: showFormnameError,
   // } = useInput("", isLength({ min: 1 }));
 
+  const [tab, setTab] = useState("Flow");
+
   const [formName, setFormName] = useState("");
   const [messages, setMessages] = useState([]);
   const [theme, setTheme] = useState("light");
+
+  const navigate = useNavigate();
 
   // const dispatch = useDispatch();
 
@@ -93,6 +99,27 @@ export default function Formbot() {
     }
   };
 
+  const handleClose = () => {
+    navigate("/workspace");
+  };
+
+  let content;
+
+  if (tab === "Flow") {
+    content = (
+      <Flow
+        messages={messages}
+        handleAddMessage={handleAddMessage}
+        handleValueChange={handleValueChange}
+        handleDelete={handleDelete}
+      />
+    );
+  } else if (tab === "Theme") {
+    content = <>theme</>;
+  } else if (tab === "Response") {
+    content = <Response id={id} />;
+  }
+
   return (
     <div className={classes.formbot}>
       <div className={classes.header}>
@@ -106,7 +133,14 @@ export default function Formbot() {
         <ul className={classes.tabBtns}>
           {["Flow", "Theme", "Response"].map((el) => (
             <li key={el}>
-              <button className={classes.tabBtn}>{el}</button>
+              <button
+                className={`${classes.tabBtn} ${
+                  tab === el ? classes.tabBtnActive : ""
+                }`}
+                onClick={() => setTab(el)}
+              >
+                {el}
+              </button>
             </li>
           ))}
         </ul>
@@ -121,68 +155,13 @@ export default function Formbot() {
           </li>
 
           <li>
-            <button className={classes.closeBtn}>
+            <button className={classes.closeBtn} onClick={handleClose}>
               <CloseIcon className={classes.closeIcon} />
             </button>
           </li>
         </ul>
       </div>
-
-      <div className={classes.main}>
-        <div className={classes.messagePicker}>
-          <div className={classes.bubbles}>
-            <h2 className={classes.messageHeading}>Bubbles</h2>
-            <ul className={classes.messageBtns}>
-              {bubbles.map((valueType) => (
-                <li key={"bubble-" + valueType}>
-                  <button
-                    onClick={() =>
-                      handleAddMessage({ type: "bubble", valueType: valueType })
-                    }
-                    className={classes.messageBtn}
-                  >
-                    <img src={email} alt="" className={classes.messageLogo} />
-                    <span>{valueType}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={classes.inputs}>
-            <h2 className={classes.messageHeading}>Inputs</h2>
-            <ul className={classes.messageBtns}>
-              {inputs.map((valueType) => (
-                <li key={"input-" + valueType}>
-                  <button
-                    onClick={() =>
-                      handleAddMessage({ type: "input", valueType: valueType })
-                    }
-                    className={classes.messageBtn}
-                  >
-                    <img src={email} alt="" className={classes.messageLogo} />
-                    <span>{valueType}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div></div>
-        <div>
-          <ul className={classes.messages}>
-            <li>start</li>
-            {messages.map((message, idx) => (
-              <Message
-                key={idx}
-                message={message}
-                onChange={(event) => handleValueChange(idx, event.target.value)}
-                onDelete={() => handleDelete(idx)}
-              /> // todo: using idx as key. better will be id since idx is being used in onChange too
-            ))}
-          </ul>
-        </div>
-      </div>
+      {content}
     </div>
   );
 }
