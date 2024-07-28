@@ -13,6 +13,7 @@ router.use('/:id/responses', responseRouter);
 router
   .route('/:id')
   .get(formbotController.getFormbot)
+  .put(formbotController.updateFormbot)
   .delete(formbotController.deleteFormbot);
 
 router.post('/', formbotController.createFormbot);

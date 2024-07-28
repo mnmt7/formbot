@@ -38,10 +38,19 @@
   color: #fff;
   margin-top: 24px;
   margin-bottom: 12px;
+  cursor: pointer;
 }
 
 .register {
   text-align: center;
+}
+
+.submitBtn:hover {
+  background-color: #054ef7;
+}
+
+.submitBtn:active {
+  background-color: #0535f7;
 }
 
 .registerLink:link,

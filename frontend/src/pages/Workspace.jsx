@@ -9,37 +9,38 @@ export default function Workspace() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [currentFolder, setCurrentFolder] = useState(user.rootFolder);
   const [folders, setFolders] = useState([]);
   const [formbots, setFormbots] = useState([]);
 
   useEffect(() => {
-    handleFolderChange(user.rootFolder);
-  }, [user]);
-
-  const handleFolderChange = async (folderId) => {
-    const response = await fetchFolder(folderId);
-    setFolders(response.data.data.folders);
-    setFormbots(response.data.data.formbots);
-  };
+    (async () => {
+      const response = await fetchFolder(currentFolder);
+      setFolders(response.data.data.folders);
+      setFormbots(response.data.data.formbots);
+    })();
+  }, [user, currentFolder]);
 
   return (
-    <>
-      <select name="" id="">
-        <option value="">{`${user.username}'s workspace`}</option>
-        <option value="" onClick={() => navigate("/settings")}>
-          Settings
-        </option>
-        <option value="" onClick={() => dispatch(logoutAsync())}>
-          logout
-        </option>
-      </select>
+    <div className="container">
+      <div>
+        <select name="" id="">
+          <option value="">{`${user.username}'s workspace`}</option>
+          <option value="" onClick={() => navigate("/settings")}>
+            Settings
+          </option>
+          <option value="" onClick={() => dispatch(logoutAsync())}>
+            logout
+          </option>
+        </select>
+      </div>
 
       <div>
         <button>create a folder</button>
         <ul>
           {folders.map((folder) => (
             <li key={folder._id}>
-              <button onClick={() => handleFolderChange(folder._id)}>
+              <button onClick={() => setCurrentFolder(folder._id)}>
                 {folder.name}
               </button>
             </li>
@@ -47,7 +48,9 @@ export default function Workspace() {
         </ul>
       </div>
 
-      <button onClick={() => navigate("/formbot/new")}>create a formbot</button>
+      <button onClick={() => navigate(`/formbot/new?folder=${currentFolder}`)}>
+        create a formbot
+      </button>
 
       <ul>
         {formbots.map((formbot) => (
@@ -56,6 +59,6 @@ export default function Workspace() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }

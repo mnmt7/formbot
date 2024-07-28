@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkAuthAsync, selectAuthUser } from "./store/auth-slice";
 import Protected from "./components/Protected";
 import Settings from "./pages/Settings";
+import Formbot from "./pages/Formbot";
+import Chat from "./pages/Chat";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,18 @@ const router = createBrowserRouter([
             <Settings />
           </Protected>
         ),
+      },
+      {
+        path: "formbot/:id",
+        element: (
+          <Protected>
+            <Formbot />
+          </Protected>
+        ),
+      },
+      {
+        path: "chat/:id",
+        element: <Chat />,
       },
     ],
   },

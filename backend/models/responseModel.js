@@ -10,8 +10,13 @@ const responseSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       required: true,
     },
-    response: {
-      type: [String],
+    responses: {
+      type: [
+        {
+          response: String,
+          question: mongoose.Schema.ObjectId,
+        },
+      ],
       required: true,
     },
   },

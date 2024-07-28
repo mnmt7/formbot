@@ -3,7 +3,20 @@ const AppError = require('../utils/appError');
 // const Question = require('../models/questionModel');
 const catchAsync = require('../utils/catchAsync');
 
-exports.getFormbot = catchAsync(async (req, res, next) => {});
+exports.getFormbot = catchAsync(async (req, res, next) => {
+  const formbot = await Formbot.findById(req.params.id);
+
+  if (!formbot) {
+    return next(new AppError(`Cannot find formbot with ${req.params.id}`, 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: formbot,
+    },
+  });
+});
 
 exports.createFormbot = catchAsync(async (req, res, next) => {
   // req.body.questions.forEach((q) => {
@@ -25,6 +38,26 @@ exports.createFormbot = catchAsync(async (req, res, next) => {
   // await formbot.save();
 
   res.status(201).json({
+    status: 'success',
+    data: {
+      data: formbot,
+    },
+  });
+});
+
+exports.updateFormbot = catchAsync(async (req, res, next) => {
+  const formbot = await Formbot.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!formbot) {
+    return next(
+      new AppError(`Cannot find the formbot with id: ${req.params.id}`, 404),
+    );
+  }
+
+  res.status(200).json({
     status: 'success',
     data: {
       data: formbot,
