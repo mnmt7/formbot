@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
@@ -10,6 +11,8 @@ const folderRouter = require('./routes/folderRoutes');
 const app = express();
 
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
