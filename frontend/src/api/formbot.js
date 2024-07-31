@@ -73,3 +73,19 @@ export const fetchFormbotResponses = async (id) => {
 
   return resData;
 };
+
+export const deleteFormbot = async (formbotId) => {
+  const response = await fetch(`${BACKEND_URL}/formbots/${formbotId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (!response.ok) {
+    const resData = await response.json();
+    throw new Error(resData.message);
+  }
+
+  return;
+};

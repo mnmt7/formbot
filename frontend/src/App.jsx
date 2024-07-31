@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
 import Home from "./pages/Home";
@@ -63,7 +64,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const user = useSelector(selectAuthUser);
+  // window.location.pathname
+  // const user = useSelector(selectAuthUser);
 
   const dispatch = useDispatch();
 

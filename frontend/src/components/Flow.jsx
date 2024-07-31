@@ -7,14 +7,35 @@ import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFormbotAsync, selectFormbot } from "../store/formbot-slice";
 import classes from "./Flow.module.css";
-import text from "../assets/text.svg";
 import image from "../assets/image.svg";
-import email from "../assets/email.svg";
 import startIcon from "../assets/start.svg";
+import textInput from "../assets/text-input.png";
+import textBubble from "../assets/text-bubble.svg";
+import video from "../assets/video.svg";
+import gif from "../assets/gif.svg";
+import number from "../assets/number.png";
+import email from "../assets/email.png";
+import phone from "../assets/phone.png";
+import date from "../assets/date.png";
+import rating from "../assets/rating.png";
+import button from "../assets/button.svg";
 
-const bubbles = ["Text", "Image", "Video", "GIF"];
+const bubbles = [
+  { type: "text", icon: textBubble },
+  { type: "image", icon: image },
+  { type: "video", icon: video },
+  { type: "gif", icon: gif },
+];
 
-const inputs = ["Text", "Number", "Email", "Phone", "Date", "Rating", "Button"];
+const inputs = [
+  { type: "text", icon: textInput },
+  { type: "number", icon: number },
+  { type: "email", icon: email },
+  { type: "phone", icon: phone },
+  { type: "date", icon: date },
+  { type: "rating", icon: rating },
+  { type: "button", icon: button },
+];
 
 export default function Flow({
   messages,
@@ -28,16 +49,16 @@ export default function Flow({
         <div className={classes.bubbles}>
           <h2 className={classes.messageHeading}>Bubbles</h2>
           <ul className={classes.messageBtns}>
-            {bubbles.map((valueType) => (
-              <li key={"bubble-" + valueType}>
+            {bubbles.map((el) => (
+              <li key={"bubble-" + el.type}>
                 <button
                   onClick={() =>
-                    handleAddMessage({ type: "bubble", valueType: valueType })
+                    handleAddMessage({ type: "bubble", valueType: el.type })
                   }
                   className={classes.messageBtn}
                 >
-                  <img src={email} alt="" className={classes.messageLogo} />
-                  <span>{valueType}</span>
+                  <img src={el.icon} alt="" className={classes.messageLogo} />
+                  <span>{el.type}</span>
                 </button>
               </li>
             ))}
@@ -47,16 +68,16 @@ export default function Flow({
         <div className={classes.inputs}>
           <h2 className={classes.messageHeading}>Inputs</h2>
           <ul className={classes.messageBtns}>
-            {inputs.map((valueType) => (
-              <li key={"input-" + valueType}>
+            {inputs.map((el) => (
+              <li key={"input-" + el.type}>
                 <button
                   onClick={() =>
-                    handleAddMessage({ type: "input", valueType: valueType })
+                    handleAddMessage({ type: "input", valueType: el.type })
                   }
                   className={classes.messageBtn}
                 >
-                  <img src={email} alt="" className={classes.messageLogo} />
-                  <span>{valueType}</span>
+                  <img src={el.icon} alt="" className={classes.messageLogo} />
+                  <span>{el.type}</span>
                 </button>
               </li>
             ))}

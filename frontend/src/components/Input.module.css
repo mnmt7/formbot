@@ -3,6 +3,9 @@
   flex-direction: column;
   gap: 4px;
   width: 300px;
+  position: relative;
+  /* padding-bottom: 16px; */
+  color: #fff;
 }
 
 .label {
@@ -19,7 +22,7 @@
   color: #fff;
   border-color: rgba(255, 255, 255, 0.469);
   padding: 12px;
-  border-radius: 16px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 300;
 }
@@ -31,4 +34,7 @@
 .error {
   color: #ff4141;
   font-size: 0.8rem;
+
+  /* position: absolute;
+  bottom: 0; */
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+
 import Message from "../components/Message";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { createFormbot, updateFormbot, fetchFormbot } from "../api/formbot";
 import { isLength } from "validator";
 import useInput from "../hooks/useInput";
@@ -78,6 +79,8 @@ export default function Formbot() {
     );
   };
 
+  const navigate = useNavigate();
+
   const handleSave = async () => {
     const data = {
       name: formName,
@@ -87,7 +90,9 @@ export default function Formbot() {
     };
 
     if (id === "new") {
-      await createFormbot(data);
+      const response = await createFormbot(data);
+      const newFormbotId = response.data.data._id;
+      navigate(`/formbot/${newFormbotId}`);
     } else {
       await updateFormbot(data, id);
     }

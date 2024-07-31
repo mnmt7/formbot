@@ -57,6 +57,10 @@
   background-color: var(--GREY-1-COLOR);
 }
 
+.shareBtnActive {
+  background-color: var(--BLUE-COLOR);
+}
+
 .saveBtn {
   background-color: #40b66c;
 }
@@ -148,4 +152,20 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.copied {
+  position: absolute;
+  right: 64px;
+  bottom: -52px;
+  display: flex;
+  gap: 12px;
+  background-color: var(--DARK-COLOR);
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
 }

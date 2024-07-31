@@ -1,12 +1,21 @@
 const express = require('express');
 
 const formbotController = require('../controllers/formbotController');
-const responseRouter = require('../routes/responseRoutes');
+const responseRouter = require('./responseRoutes');
 const authController = require('../controllers/authController');
+const formbotValidation = require('../validations/formbotValidation');
 
 const router = express.Router();
 
 router.use(authController.protect);
+
+router.post('/', formbotValidation.new, formbotController.createFormbot);
+
+router.use(
+  '/:id',
+  formbotValidation.paramId,
+  formbotController.checkFormbotUser,
+);
 
 router.use('/:id/responses', responseRouter);
 
@@ -15,7 +24,5 @@ router
   .get(formbotController.getFormbot)
   .put(formbotController.updateFormbot)
   .delete(formbotController.deleteFormbot);
-
-router.post('/', formbotController.createFormbot);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const Folder = require('../models/folderModel');
 const AppError = require('../utils/appError');
+const { default: mongoose } = require('mongoose');
 
 exports.getFolder = catchAsync(async (req, res, next) => {
   const folder = await Folder.findById(req.params.id)
@@ -36,8 +37,8 @@ exports.createFolder = catchAsync(async (req, res, next) => {
 
   const parentFolder = await Folder.findById(parent);
 
-  if (!parentFolder.user.equals(req.user._id)) {
-    return next(new AppError('Parent folder does not belong to the user', 401));
+  if (!parentFolder || !parentFolder.user.equals(req.user._id)) {
+    return next(new AppError('Folder not found', 404));
   }
 
   const folder = await Folder.create({ name, parent, user: req.user._id });
@@ -53,18 +54,6 @@ exports.createFolder = catchAsync(async (req, res, next) => {
 exports.deleteFolder = catchAsync(async (req, res, next) => {
   const folder = await Folder.findById(req.params.id);
 
-  if (!folder) {
-    return next(
-      new AppError(`Cannot find the folder with id: ${req.params.id}`, 404),
-    );
-  }
-
-  if (folder.user !== req.user._id) {
-    return next(
-      new AppError('You are not authorized to delete this folder', 401),
-    );
-  }
-
   if (folder._id === req.user.folder) {
     return next(new AppError('Cannot delete the root folder', 404));
   }
@@ -75,4 +64,27 @@ exports.deleteFolder = catchAsync(async (req, res, next) => {
     status: 'success',
     data: null,
   });
+});
+
+exports.checkFolderUser = catchAsync(async (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return next(new AppError(`Invalid folder Id: ${req.params.id}`, 401));
+  }
+
+  const folder = await Folder.findById(req.params.id);
+
+  if (!folder) {
+    return next(new AppError(`Cannot find folder with ${req.params.id}`, 404));
+  }
+
+  if (!folder.user.equals(req.user._id)) {
+    return next(
+      new AppError(
+        `You are not authorized to access folder: ${req.params.id}`,
+        401,
+      ),
+    );
+  }
+
+  next();
 });

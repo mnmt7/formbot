@@ -1,7 +1,49 @@
 .main {
   background-color: #1f1f23;
+  position: relative;
+  padding: 72px;
+}
+
+.container {
+  max-width: 70vw;
+  overflow: scroll;
+  margin: auto;
+  margin-top: 48px;
 }
 
 .table {
   margin: auto;
+}
+
+.noResponse {
+  color: #69696973;
+  font-size: 1.7rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.stats {
+  display: flex;
+  gap: 88px;
+  justify-content: center;
+}
+
+.stat {
+  min-width: 130px;
+  padding: 4px;
+  background-color: #323232;
+  border-radius: 8px;
+  padding: 8px 12px 20px 16px;
+}
+
+.statTxt {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.statVal {
+  font-size: 1.1rem;
+  font-weight: 500;
 }

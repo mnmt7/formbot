@@ -5,16 +5,16 @@ import triangles from "../assets/triangles.svg";
 import ellipse1 from "../assets/ellipse-1.svg";
 import ellipse2 from "../assets/ellipse-2.svg";
 import { useSelector } from "react-redux";
-import { selectAuthUser } from "../store/auth-slice";
+import {
+  selectAuthError,
+  selectAuthStatus,
+  selectAuthUser,
+} from "../store/auth-slice";
 
-export default function AuthForm({
-  isLogin,
-  children,
-  onSubmit,
-  disabled,
-  error,
-}) {
+export default function AuthForm({ isLogin, children, onSubmit }) {
   const user = useSelector(selectAuthUser);
+  const status = useSelector(selectAuthStatus);
+  const error = useSelector(selectAuthError);
 
   if (user) {
     return <Navigate to="/workspace" />;
@@ -39,11 +39,17 @@ export default function AuthForm({
         </svg>
       </Link>
       <form className={classes.form} onSubmit={onSubmit}>
-        {error}
+        <p className={classes.error}>{error}</p>
         {children}
         <div>
-          <button className={classes.submitBtn} disabled={disabled}>
-            {isLogin ? "Log In" : "Sign Up"}
+          <button className={classes.submitBtn} disabled={status === "loading"}>
+            {isLogin
+              ? status === "loading"
+                ? "Logging In..."
+                : "Log In"
+              : status === "loading"
+              ? "Signing Up..."
+              : "Sign Up"}
           </button>
           <p className={classes.register}>
             {isLogin ? (

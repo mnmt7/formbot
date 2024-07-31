@@ -1,3 +1,13 @@
+.container {
+  max-width: 1500px;
+  margin: auto;
+}
+
+.home {
+  background-color: #171923;
+  color: #fff;
+}
+
 .header {
   display: flex;
   gap: 8px;
@@ -104,6 +114,10 @@
   align-items: center;
 }
 
+.section2Heading {
+  font-size: 1.4rem;
+}
+
 .section3 {
   margin: auto;
   width: 1250px;
@@ -132,6 +146,11 @@
   /* width: 1000px; */
 }
 
+.platforms {
+  max-width: 1500px;
+  margin: auto;
+}
+
 .section5 {
   margin-top: 180px;
   display: flex;
@@ -158,9 +177,18 @@
   width: 1000px;
 }
 
+.formbotDemo2 {
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
 .section7 {
   margin-top: 180px;
   text-align: center;
+}
+
+.gradientColor {
+  background: linear-gradient(#171923, #191f2b);
 }
 
 .section8 {
@@ -168,6 +196,7 @@
   margin-top: 72px;
 
   text-align: center;
+  /* linear-gradient() */
 }
 
 .designLeftImg {
@@ -196,6 +225,7 @@
   display: flex;
   gap: 128px;
   justify-content: center;
+  padding: 16px 0 64px 0;
 }
 
 .footerLogo {

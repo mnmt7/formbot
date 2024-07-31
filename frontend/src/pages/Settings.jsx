@@ -5,6 +5,7 @@ import isUsername from "../utils/isUsername";
 import Input from "../components/Input";
 import { logoutAsync } from "../store/auth-slice";
 import { useDispatch } from "react-redux";
+import classes from "./Settings.module.css";
 
 export default function Settings() {
   const {
@@ -44,42 +45,37 @@ export default function Settings() {
   };
 
   return (
-    <>
-      <h1>settings</h1>
+    <div className={classes.settings}>
+      <h1 className={classes.heading}>Settings</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={classes.form}>
         <Input
           id="username"
-          label="Username"
-          placeholder="Enter a username"
+          placeholder="Username"
           type="text"
           value={username}
           onChange={handleUsernameChange}
-          onBlur={showUsernameError}
           error={usernameError}
           errorText={
             "Username must be minimum 5 characters long and maximum 15 characters long"
           }
+          disabled={true}
         />
         <Input
           id="email"
-          label="Email"
-          placeholder="Enter your email"
+          placeholder="Update Email"
           type="text"
           value={email}
           onChange={handleEmailChange}
-          onBlur={showEmailError}
           error={emailError}
           errorText={emailError && "Invalid email"}
         />
         <Input
           id="password"
-          label="Password"
-          placeholder="**********"
+          placeholder="Old Password"
           type="password"
           value={password}
           onChange={handlePasswordChange}
-          onBlur={showPasswordError}
           error={passwordError}
           errorText={
             passwordError &&
@@ -88,8 +84,7 @@ export default function Settings() {
         />
         <Input
           id="passwordConfirm"
-          label="PasswordConfirm"
-          placeholder="**********"
+          placeholder="New Password"
           type="password"
           value={passwordConfirm}
           onChange={handlePasswordConfirmChange}
@@ -102,6 +97,6 @@ export default function Settings() {
       </form>
 
       <button onClick={() => dispatch(logoutAsync())}>logout</button>
-    </>
+    </div>
   );
 }

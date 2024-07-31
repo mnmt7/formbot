@@ -1,6 +1,7 @@
 .features {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  padding: 0 48px;
   gap: 42px;
   margin-top: 112px;
 }

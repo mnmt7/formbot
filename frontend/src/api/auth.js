@@ -63,3 +63,29 @@ export const checkAuth = async () => {
 
   return resData;
 };
+
+export const updatePassword = async (data) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("User not logged in!");
+  }
+
+  const response = await fetch(`${BACKEND_URL}/users/updatePassword`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  const resData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(resData.message);
+  }
+
+  localStorage.setItem("token", resData.token);
+
+  return resData;
+};

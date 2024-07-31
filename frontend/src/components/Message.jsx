@@ -12,20 +12,24 @@ export default function Message({ message, onChange, onDelete }) {
       <p className={classes.valueType}>{valueType}</p>
       {type === "bubble" ? (
         <input
-          className={classes.input}
+          className={`${classes.input} ${
+            message.error ? classes.inputError : ""
+          }`}
           placeholder={
-            valueType === "Text" ? "Click here to edit" : "Click to add link"
+            valueType === "text" ? "Click here to edit" : "Click to add link"
           }
           value={value}
           onChange={onChange}
         />
       ) : (
         <>
-          {valueType === "Button" ? (
+          {valueType === "button" ? (
             <input
               value={value}
               onChange={onChange}
-              className={classes.input}
+              className={`${classes.input} ${
+                message.error ? classes.inputError : ""
+              }`}
             />
           ) : (
             <p
@@ -34,6 +38,7 @@ export default function Message({ message, onChange, onDelete }) {
           )}
         </>
       )}
+      {message.error && <p className={classes.error}>{message.error}</p>}
     </li>
   );
 }

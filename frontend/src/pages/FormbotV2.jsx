@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import Message from "../components/Message";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { createFormbot, updateFormbot, fetchFormbot } from "../api/formbot";
-import { isLength } from "validator";
+import { isLength, isURL } from "validator";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFormbotAsync, selectFormbot } from "../store/formbot-slice";
@@ -10,12 +12,10 @@ import classes from "./Formbot.module.css";
 import text from "../assets/text.svg";
 import image from "../assets/image.svg";
 import email from "../assets/email.svg";
+import checkIcon from "../assets/check.svg";
 import Flow from "../components/Flow";
 import Response from "../components/Response";
-
-const bubbles = ["Text", "Image", "Video", "GIF"];
-
-const inputs = ["Text", "Number", "Email", "Phone", "Date", "Rating", "Button"];
+import Theme from "../components/Theme";
 
 export default function Formbot() {
   const { id } = useParams();
@@ -38,6 +38,8 @@ export default function Formbot() {
   const [formName, setFormName] = useState("");
   const [messages, setMessages] = useState([]);
   const [theme, setTheme] = useState("light");
+
+  const [copied, setCopied] = useState(false);
 
   const navigate = useNavigate();
 
@@ -72,9 +74,15 @@ export default function Formbot() {
 
   const handleValueChange = (messageIdx, value) => {
     setMessages((prevMessages) =>
-      prevMessages.map((message, idx) =>
-        idx === messageIdx ? { ...message, value } : message
-      )
+      prevMessages.map((message, idx) => {
+        if (idx === messageIdx) {
+          const newMessage = { ...message, value };
+          delete newMessage.error;
+          return newMessage;
+        } else {
+          return message;
+        }
+      })
     );
   };
 
@@ -85,6 +93,42 @@ export default function Formbot() {
   };
 
   const handleSave = async () => {
+    if (formName.length === 0) {
+      toast("Enter form name!");
+      return;
+    }
+
+    if (messages.length === 0) {
+      toast("Add at least one message");
+      return;
+    }
+
+    let isError = false;
+
+    const messagesWithErrors = messages.map((message) => {
+      if (
+        ((message.type === "bubble" && message.valueType === "text") ||
+          message.valueType === "button") &&
+        !isLength(message.value, { min: 1 })
+      ) {
+        isError = true;
+        return { ...message, error: "Required field" };
+      } else if (
+        ["image", "video", "gif"].includes(message.valueType) &&
+        !isURL(message.value)
+      ) {
+        isError = true;
+        return { ...message, error: "Enter valid url" };
+      } else {
+        return { ...message };
+      }
+    });
+
+    if (isError) {
+      setMessages(messagesWithErrors);
+      return;
+    }
+
     const data = {
       name: formName,
       messages,
@@ -93,10 +137,24 @@ export default function Formbot() {
     };
 
     if (id === "new") {
-      await createFormbot(data);
+      const response = await createFormbot(data);
+      const newFormbotId = response.data.data._id;
+      navigate(`/formbot/${newFormbotId}`);
+      toast("Formbot saved!");
     } else {
       await updateFormbot(data, id);
+      toast("Formbot updated!");
     }
+  };
+
+  const handleCopy = async () => {
+    const shareLink = `${window.location.hostname}/chat/${id}`;
+    await navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
   };
 
   const handleClose = () => {
@@ -115,7 +173,7 @@ export default function Formbot() {
       />
     );
   } else if (tab === "Theme") {
-    content = <>theme</>;
+    content = <Theme currTheme={theme} handleSelectTheme={setTheme} />;
   } else if (tab === "Response") {
     content = <Response id={id} />;
   }
@@ -123,12 +181,20 @@ export default function Formbot() {
   return (
     <div className={classes.formbot}>
       <div className={classes.header}>
+        {copied && (
+          <p className={classes.copied}>
+            <img src={checkIcon} alt="" />
+            <span>Link Copied</span>
+          </p>
+        )}
         <input
           type="text"
           placeholder="Enter Form Name"
           value={formName}
           onChange={(event) => setFormName(event.target.value)}
-          className={classes.formnameInput}
+          className={`${classes.formnameInput} ${
+            tab !== "Flow" ? classes.hidden : ""
+          }`}
         />
         <ul className={classes.tabBtns}>
           {["Flow", "Theme", "Response"].map((el) => (
@@ -146,7 +212,14 @@ export default function Formbot() {
         </ul>
         <ul className={classes.btns}>
           <li>
-            <button className={classes.shareBtn}>Share</button>
+            <button
+              className={`${classes.shareBtn} 
+            ${id !== "new" ? classes.shareBtnActive : ""}
+            `}
+              onClick={handleCopy}
+            >
+              Share
+            </button>
           </li>
           <li>
             <button onClick={handleSave} className={classes.saveBtn}>

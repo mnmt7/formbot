@@ -1,27 +1,44 @@
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAsync, selectAuthUser } from "../store/auth-slice";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { fetchFolder } from "../api/folder";
 import deleteIcon from "../assets/delete.svg";
+import DeleteModal from "../components/DeleteModal";
+import CreateFolderModal from "../components/CreateFolderModal";
 import classes from "./Workspace.module.css";
+import { fetchFolderAsync, selectFolder } from "../store/folder-slice";
 
 export default function Workspace() {
   const user = useSelector(selectAuthUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const folder = useSelector(selectFolder);
+  const folders = folder ? folder.folders : [];
+  const formbots = folder ? folder.formbots : [];
+
   const [currentFolder, setCurrentFolder] = useState(user.rootFolder);
-  const [folders, setFolders] = useState([]);
-  const [formbots, setFormbots] = useState([]);
+  // const [folders, setFolders] = useState([]);
+  // const [formbots, setFormbots] = useState([]);
+
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const createModalRef = useRef();
+  const deleteModalRef = useRef();
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await fetchFolder(currentFolder);
+  //     setFolders(response.data.data.folders);
+  //     setFormbots(response.data.data.formbots);
+  //   })();
+  // }, [currentFolder]);
 
   useEffect(() => {
-    (async () => {
-      const response = await fetchFolder(currentFolder);
-      setFolders(response.data.data.folders);
-      setFormbots(response.data.data.formbots);
-    })();
-  }, [user, currentFolder]);
+    dispatch(fetchFolderAsync(currentFolder));
+  }, [dispatch, currentFolder]);
 
   const handleDeleteFolder = () => {
     // todo
@@ -33,6 +50,10 @@ export default function Workspace() {
 
   return (
     <div className={classes.workspace}>
+      <CreateFolderModal parent={currentFolder} ref={createModalRef} />
+      {selectedItem && (
+        <DeleteModal ref={deleteModalRef} selectedItem={selectedItem} />
+      )}
       <div className={classes.header}>
         <select name="" id="" className={classes.select}>
           <option value="">{`${user.username}'s workspace`}</option>
@@ -47,7 +68,10 @@ export default function Workspace() {
       <div className={classes.main}>
         <ul className={classes.folderBtns}>
           <li>
-            <button className={classes.folder}>
+            <button
+              className={classes.folder}
+              onClick={() => createModalRef.current?.open()}
+            >
               <NewFolderIcon className={classes.newFolderIcon} />
               <span>Create a folder</span>
             </button>
@@ -62,7 +86,10 @@ export default function Workspace() {
                   src={deleteIcon}
                   alt="Delete Icon"
                   className={classes.deleteIcon}
-                  onClick={handleDeleteFolder}
+                  onClick={() => {
+                    setSelectedItem({ type: "folder", id: folder._id });
+                    deleteModalRef.current?.open();
+                  }}
                 />
                 {/* <DeleteIcon
                   className={classes.deleteIcon}
@@ -72,31 +99,34 @@ export default function Workspace() {
             </li>
           ))}
         </ul>
-      </div>
-      <ul className={classes.formbots}>
-        <li>
-          <button
-            className={classes.newFormbot}
-            onClick={() => navigate(`/formbot/new?folder=${currentFolder}`)}
-          >
-            <PlusIcon className={classes.plusIcon} />
-            <span>Create a formbot</span>
-          </button>
-        </li>
-        {formbots.map((formbot) => (
-          <li className={classes.formbotContainer} key={formbot._id}>
-            <Link to={`/formbot/${formbot._id}`} className={classes.formbot}>
-              {formbot.name}
-            </Link>
-            <img
-              src={deleteIcon}
-              alt="Delete Icon"
-              className={classes.deleteFormbotIcon}
-              onClick={handleDeleteFormbot}
-            />
+        <ul className={classes.formbots}>
+          <li>
+            <button
+              className={classes.newFormbot}
+              onClick={() => navigate(`/formbot/new?folder=${currentFolder}`)}
+            >
+              <PlusIcon className={classes.plusIcon} />
+              <span>Create a formbot</span>
+            </button>
           </li>
-        ))}
-      </ul>
+          {formbots.map((formbot) => (
+            <li className={classes.formbotContainer} key={formbot._id}>
+              <Link to={`/formbot/${formbot._id}`} className={classes.formbot}>
+                {formbot.name}
+              </Link>
+              <img
+                src={deleteIcon}
+                alt="Delete Icon"
+                className={classes.deleteFormbotIcon}
+                onClick={() => {
+                  setSelectedItem({ type: "formbot", id: formbot._id });
+                  deleteModalRef.current?.open();
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

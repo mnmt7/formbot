@@ -1,0 +1,16 @@
+.settings {
+  min-height: 100vh;
+  background-color: var(--DARK-COLOR);
+  color: #fff;
+}
+
+.heading {
+  font-weight: normal;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

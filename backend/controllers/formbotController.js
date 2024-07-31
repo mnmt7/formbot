@@ -1,3 +1,4 @@
+const Folder = require('../models/folderModel');
 const Formbot = require('../models/formbotModel');
 const AppError = require('../utils/appError');
 // const Question = require('../models/questionModel');
@@ -5,10 +6,6 @@ const catchAsync = require('../utils/catchAsync');
 
 exports.getFormbot = catchAsync(async (req, res, next) => {
   const formbot = await Formbot.findById(req.params.id);
-
-  if (!formbot) {
-    return next(new AppError(`Cannot find formbot with ${req.params.id}`, 404));
-  }
 
   res.status(200).json({
     status: 'success',
@@ -19,23 +16,21 @@ exports.getFormbot = catchAsync(async (req, res, next) => {
 });
 
 exports.createFormbot = catchAsync(async (req, res, next) => {
-  // req.body.questions.forEach((q) => {
-  //   q.id = Math.floor(Math.random() * 10000);
-  // });
+  const { name, theme, messages, folder } = req.body;
 
-  req.body.user = req.user._id;
-  const formbot = await Formbot.create(req.body);
+  const folderDoc = await Folder.findById(folder);
 
-  // const questionArr = req.body.questions.map((question, index) => ({
-  //   ...question,
-  //   serialNo: index + 1,
-  //   formbot: formbot._id,
-  // }));
+  if (!folderDoc || !folderDoc.user.equals(req.user._id)) {
+    return next(new AppError('Folder not found!', 404));
+  }
 
-  // const questionDocs = await Question.create(questionArr);
-
-  // formbot.questions = questionDocs.map((question) => question._id);
-  // await formbot.save();
+  const formbot = await Formbot.create({
+    name,
+    theme,
+    messages,
+    folder,
+    user: req.user._id,
+  });
 
   res.status(201).json({
     status: 'success',
@@ -66,24 +61,31 @@ exports.updateFormbot = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteFormbot = catchAsync(async (req, res, next) => {
-  const formbot = await Formbot.findById(req.params.id);
-
-  if (!formbot) {
-    return next(
-      new AppError(`Cannot find the formbot with id: ${req.params.id}`, 404),
-    );
-  }
-
-  if (!formbot.user.equals(req.user._id)) {
-    return next(
-      new AppError('You are not authorized to delete this formbot', 401),
-    );
-  }
-
   await Formbot.findByIdAndDelete(req.params.id);
 
   res.status(204).json({
     status: 'success',
     data: null,
   });
+});
+
+exports.checkFormbotUser = catchAsync(async (req, res, next) => {
+  const formbot = await Formbot.findById(req.params.id);
+
+  console.log({ formbot });
+
+  if (!formbot) {
+    return next(new AppError(`Cannot find formbot with ${req.params.id}`, 404));
+  }
+
+  if (!formbot.user.equals(req.user._id)) {
+    return next(
+      new AppError(
+        `You are not authorized to access formbot: ${req.params.id}`,
+        401,
+      ),
+    );
+  }
+
+  next();
 });

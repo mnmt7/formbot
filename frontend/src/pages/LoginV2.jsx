@@ -22,9 +22,9 @@ export default function Login() {
     event.preventDefault();
 
     const data = { email, password };
-
     dispatch(loginAsync(data));
   };
+
   return (
     <AuthForm isLogin={true} onSubmit={handleSubmit}>
       <Input

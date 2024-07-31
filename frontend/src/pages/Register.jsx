@@ -42,10 +42,6 @@ export default function Register() {
     showError: showPasswordConfirmError,
   } = useInput("", (val) => password === val);
 
-  const user = useSelector(selectAuthUser);
-  const status = useSelector(selectAuthStatus);
-  const authError = useSelector(selectAuthError);
-
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
@@ -56,17 +52,9 @@ export default function Register() {
     dispatch(registerAsync(data));
   };
 
-  console.log({ authError });
-
   return (
     <>
-      {user && <Navigate to="/workspace" />}
-      <AuthForm
-        isLogin={false}
-        onSubmit={handleSubmit}
-        error={authError}
-        disabled={status === "loading"}
-      >
+      <AuthForm isLogin={false} onSubmit={handleSubmit}>
         <Input
           id="username"
           label="Username"
@@ -76,9 +64,7 @@ export default function Register() {
           onChange={handleUsernameChange}
           onBlur={showUsernameError}
           error={usernameError}
-          errorText={
-            "Username must be minimum 5 characters long and maximum 15 characters long"
-          }
+          errorText={"Min 5 and max 15 characters long"}
         />
         <Input
           id="email"
@@ -102,7 +88,7 @@ export default function Register() {
           error={passwordError}
           errorText={
             passwordError &&
-            "Password must be minimum 8 characters long and must contain at least one lowercase character, uppercase character, number and symbol"
+            "Min 8 characters long and must contain at least one lowercase character, uppercase character, number and symbol"
           }
         />
         <Input

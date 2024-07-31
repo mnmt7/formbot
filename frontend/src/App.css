@@ -41,7 +41,12 @@ table,
 th,
 tr,
 td {
-  border: 1px solid var(--GREY-1-COLOR);
+  border: 2px solid #333333d0;
   border-collapse: collapse;
   padding: 8px 16px;
+}
+
+th,
+td {
+  max-width: 500px;
 }

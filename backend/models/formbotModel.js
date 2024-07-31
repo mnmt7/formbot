@@ -33,7 +33,7 @@ const formbotSchema = new mongoose.Schema({
   theme: {
     type: String,
     required: true,
-    enum: ['light', 'dark', 'tail blue'],
+    enum: ['light', 'dark', 'tailBlue'],
   },
   messages: {
     type: [messageSchema],
@@ -45,6 +45,10 @@ const formbotSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.ObjectId,
+  },
+  views: {
+    type: Number,
+    default: 0,
   },
 });
 

@@ -101,8 +101,8 @@ const companyLinks = [
 
 export default function Home() {
   return (
-    <>
-      <header className={classes.header}>
+    <div className={classes.home}>
+      <header className={`${classes.header} ${classes.container}`}>
         <img src={logo} className={classes.logo} />
         <h1 className={classes.logoHeading}>Formbot</h1>
         <nav className={classes.nav}>
@@ -146,11 +146,6 @@ export default function Home() {
 
         <img src={formbotDemo1} alt="" className={classes.formbotDemo1Img} />
 
-        <div className={classes.section2}>
-          <h2>Loved by teams and creators from all around the world</h2>
-          <img src={companies} alt="" />
-        </div>
-
         <div className={classes.section3}>
           <h2 className={classes.sectionHeading1}>
             Replace your old school forms <br /> with <br /> chatbots
@@ -160,6 +155,10 @@ export default function Home() {
             increase in customer satisfaction and retention and multiply by 3
             your conversion rate compared to classical forms.
           </p>
+          <div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
 
         <div className={classes.section4}>
@@ -193,8 +192,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={classes.section5}>
-          <img src={platforms} alt="" />
+        <div className={`${classes.section5} ${classes.container}`}>
+          <img className={classes.platforms} src={platforms} alt="" />
           <div>
             <h2 className={classes.sectionHeading2}>
               Integrate with any platform
@@ -221,10 +220,16 @@ export default function Home() {
               any valuable data.
             </p>
           </div>
-          <img src={formbotDemo2} alt="" width={570} height={531} />
+          <img
+            className={classes.formbotDemo2}
+            src={formbotDemo2}
+            alt=""
+            width={570}
+            height={531}
+          />
         </div>
 
-        <div className={classes.section7}>
+        <div className={`${classes.section7} ${classes.container}`}>
           <h2 className={classes.sectionHeading2}>And many more features</h2>
           <p className={classes.sectionDescription}>
             Typebot makes form building easy and comes with powerful features
@@ -232,23 +237,32 @@ export default function Home() {
           <Features />
         </div>
 
-        <div className={classes.section8}>
-          <img src={designLeft} alt="" className={classes.designLeftImg} />
-          <div className={classes.section8Main}>
-            <h2 className={classes.sectionHeading2}>
-              Improve conversion and user engagement with FormBots{" "}
-            </h2>
-            <Link
-              to="/formbot/create"
-              className={`${classes.register} ${classes.registerBig}`}
-            >
-              Create a FormBot
-            </Link>
-            <p className={classes.section8SmallTxt}>
-              No trial. Generous <strong>free</strong> plan.
-            </p>
+        <div className={classes.section2}>
+          <h2 className={classes.section2Heading}>
+            Loved by teams and creators from all around the world
+          </h2>
+          <img src={companies} alt="" />
+        </div>
+
+        <div className={classes.gradientColor}>
+          <div className={`${classes.section8} ${classes.container}`}>
+            <img src={designLeft} alt="" className={classes.designLeftImg} />
+            <div className={classes.section8Main}>
+              <h2 className={classes.sectionHeading2}>
+                Improve conversion and user engagement with FormBots{" "}
+              </h2>
+              <Link
+                to="/formbot/create"
+                className={`${classes.register} ${classes.registerBig}`}
+              >
+                Create a FormBot
+              </Link>
+              <p className={classes.section8SmallTxt}>
+                No trial. Generous <strong>free</strong> plan.
+              </p>
+            </div>
+            <img src={designRight} alt="" className={classes.designRightImg} />
           </div>
-          <img src={designRight} alt="" className={classes.designRightImg} />
         </div>
       </main>
       <footer className={classes.footer}>
@@ -316,6 +330,6 @@ export default function Home() {
           </ul>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

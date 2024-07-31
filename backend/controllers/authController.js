@@ -65,8 +65,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   const user = await User.findById(req.user._id).select('+password');
 
-  console.log;
-
   if (!(await user.isCorrectPassword(passwordOld, user.password))) {
     return next(new AppError('Your current password is wrong.', 401));
   }

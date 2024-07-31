@@ -45,6 +45,10 @@ const getQuesAndSendRes = async (messageStart, formbotId, responseId, res) => {
 };
 
 exports.getChat = catchAsync(async (req, res, next) => {
+  const formbot = await Formbot.findById(req.params.id);
+  formbot.views += 1;
+  await formbot.save();
+
   const responseId = new mongoose.Types.ObjectId();
   getQuesAndSendRes(0, req.params.id, responseId, res);
 
@@ -76,20 +80,24 @@ exports.getChat = catchAsync(async (req, res, next) => {
 
 exports.createChat = catchAsync(async (req, res, next) => {
   const { response, responseId, nextMessage } = req.body;
+  // todo: validating for number
+  // todo: validating if correct response id. i know. not sure.
 
   const formbot = req.params.id;
 
-  let responseDoc = await Response.findById(responseId);
-  if (!responseDoc) {
-    responseDoc = await Response.create({
-      _id: responseId,
-      formbot,
-      responses: [],
-    });
-  }
+  if (response) {
+    let responseDoc = await Response.findById(responseId);
+    if (!responseDoc) {
+      responseDoc = await Response.create({
+        _id: responseId,
+        formbot,
+        responses: [],
+      });
+    }
 
-  responseDoc.responses.push(response);
-  await responseDoc.save();
+    responseDoc.responses.push(response);
+    await responseDoc.save();
+  }
 
   getQuesAndSendRes(nextMessage, formbot, responseId, res);
 });

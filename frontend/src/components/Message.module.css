@@ -1,11 +1,11 @@
 .message {
   background-color: var(--DARK-COLOR);
 
-  padding: 16px;
+  padding: 16px 16px 32px 16px;
   border-radius: 6px;
   position: relative;
 
-  height: 104px;
+  height: 120px;
 }
 
 .deleteBtn {
@@ -38,7 +38,18 @@
   color: #fff;
 }
 
+.inputError {
+  border: 1px solid #e74e4e;
+}
+
 .hint {
   font-size: 0.8rem;
   color: var(--GREY-1-COLOR);
+}
+
+.error {
+  color: #e74e4e;
+  font-size: 0.7rem;
+  position: absolute;
+  bottom: 12px;
 }

@@ -7,6 +7,7 @@
   align-items: center;
 
   position: relative;
+  color: #fff;
 }
 
 .back:link,
@@ -74,4 +75,10 @@
   position: absolute;
   right: 0;
   top: 100px;
+}
+
+.error {
+  color: #ff4141;
+  font-size: 0.8rem;
+  width: 300px;
 }
