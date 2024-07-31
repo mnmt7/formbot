@@ -24,10 +24,18 @@ exports.createFormbot = catchAsync(async (req, res, next) => {
     return next(new AppError('Folder not found!', 404));
   }
 
+  const newMessages = [
+    { type: 'bubble', valueType: 'text', value: 'Hi! Your name please?' },
+    { type: 'input', valueType: 'text', value: '' },
+    { type: 'bubble', valueType: 'text', value: 'And Your email?' },
+    { type: 'input', valueType: 'email', value: '' },
+    ...messages,
+  ];
+
   const formbot = await Formbot.create({
     name,
     theme,
-    messages,
+    messages: newMessages,
     folder,
     user: req.user._id,
   });

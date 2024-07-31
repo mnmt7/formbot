@@ -1,0 +1,46 @@
+.dialog::backdrop {
+  background-color: rgba(47, 47, 47, 0.47);
+}
+
+.dialog[open] {
+  margin: auto;
+  margin-top: 140px;
+
+  border-radius: 8px;
+  border: 2px solid #444;
+}
+
+.container {
+  padding: 20px 20px 15px 20px;
+  font-weight: 500;
+
+  background-color: var(--DARK-COLOR);
+  color: #fff;
+}
+
+.title {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+
+.btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 16px;
+}
+
+.btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.btn:hover {
+  opacity: 0.5;
+}
+
+.confirmBtn {
+  color: var(--BLUE-COLOR);
+  border-right: 2px solid #333;
+}

@@ -72,7 +72,7 @@ export const updatePassword = async (data) => {
   }
 
   const response = await fetch(`${BACKEND_URL}/users/updatePassword`, {
-    method: "POST",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

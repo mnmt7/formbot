@@ -1,7 +1,8 @@
+const mongoose = require('mongoose');
+
 const catchAsync = require('../utils/catchAsync');
 const Folder = require('../models/folderModel');
 const AppError = require('../utils/appError');
-const { default: mongoose } = require('mongoose');
 
 exports.getFolder = catchAsync(async (req, res, next) => {
   const folder = await Folder.findById(req.params.id)

@@ -1,18 +1,18 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
-import Home from "./pages/Home";
-import Login from "./pages/LoginV2";
-import Register from "./pages/Register";
-import Workspace from "./pages/Workspace";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { checkAuthAsync, selectAuthUser } from "./store/auth-slice";
-import Protected from "./components/Protected";
-import Settings from "./pages/Settings";
-import Formbot from "./pages/FormbotV2";
-import Chat from "./pages/Chat";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Workspace from "./pages/Workspace/Workspace";
+import { checkAuthAsync } from "./store/auth-slice";
+import Protected from "./components/Protected/Protected";
+import Settings from "./pages/Settings/Settings";
+import Formbot from "./pages/Formbot/Formbot";
+import Chat from "./pages/Chat/Chat";
 
 const router = createBrowserRouter([
   {
@@ -64,20 +64,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  // window.location.pathname
-  // const user = useSelector(selectAuthUser);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(checkAuthAsync());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (user) {
-  //     dispatch(fetchFolderAsync(user.rootFolder));
-  //   }
-  // }, [user, dispatch]);
 
   return <RouterProvider router={router} />;
 }
