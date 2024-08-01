@@ -23,8 +23,6 @@ export const sendResponseV1 = async (id, data) => {
 
   const resData = await response.json();
 
-  console.log({ resData });
-
   if (!response.ok) {
     throw new Error(resData.message);
   }

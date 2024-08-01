@@ -41,14 +41,6 @@ export default function Flow({
 }) {
   const { id } = useParams();
 
-  const bottomRef = useRef(null);
-
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, [messages]);
-
   return (
     <div className={classes.main}>
       <div className={classes.messagePicker}>
@@ -109,7 +101,6 @@ export default function Flow({
               onDelete={() => handleDelete(id === "new" ? idx : idx + 4)}
             />
           ))}
-          <li ref={bottomRef}></li>
         </ul>
       </div>
     </div>

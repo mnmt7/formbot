@@ -20,7 +20,6 @@ const formbotSlice = createSlice({
   initialState,
   extraReducers(builder) {
     builder.addCase(fetchFormbotAsync.fulfilled, (state, action) => {
-      console.log({ action });
       state.formbot = action.payload.data;
     });
   },

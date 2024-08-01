@@ -9,8 +9,6 @@ export const fetchFolder = async (folderId) => {
 
   const resData = await response.json();
 
-  console.log({ resData });
-
   if (!response.ok) {
     throw new Error(resData.message);
   }
