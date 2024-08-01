@@ -14,6 +14,7 @@ import rating from "../../assets/rating.png";
 import button from "../../assets/button.svg";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const bubbles = [
   { type: "text", icon: textBubble },
@@ -38,6 +39,8 @@ export default function Flow({
   handleValueChange,
   handleDelete,
 }) {
+  const { id } = useParams();
+
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -93,7 +96,7 @@ export default function Flow({
             <img src={startIcon} alt="Start Icon" />
             <span className={classes.startText}>Start</span>
           </li>
-          {messages.slice(4).map((message, idx) => (
+          {messages.slice(id === "new" ? 0 : 4).map((message, idx) => (
             <Message
               key={idx}
               message={message}
