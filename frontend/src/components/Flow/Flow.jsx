@@ -101,9 +101,14 @@ export default function Flow({
               key={idx}
               message={message}
               onChange={(event) =>
-                handleValueChange(idx + 4, event.target.value)
+                handleValueChange(
+                  id === "new" ? idx : idx + 4,
+                  event.target.value
+                )
               }
-              onDelete={() => handleDelete(idx + 4)}
+              onDelete={() =>
+                handleDelete(id === "new" ? idx : idx + 4, event.target.value)
+              }
             />
           ))}
           <li ref={bottomRef}></li>
