@@ -135,7 +135,7 @@ export default function Home() {
             </p>
 
             <Link
-              to="/formbot/create"
+              to="/formbot/new"
               className={`${classes.register} ${classes.registerBig}`}
             >
               Create a FormBot for free
