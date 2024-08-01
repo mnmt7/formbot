@@ -1,4 +1,6 @@
-const BACKEND_URL = "http://localhost:3000/api/v1";
+const BACKEND_URL = "https://formbot-iyrw.vercel.app/api/v1";
+
+console.log(import.meta.env.PROD);
 
 export const login = async (data) => {
   const response = await fetch(`${BACKEND_URL}/users/login`, {
