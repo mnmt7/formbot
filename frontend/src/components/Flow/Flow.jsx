@@ -97,8 +97,10 @@ export default function Flow({
             <Message
               key={idx}
               message={message}
-              onChange={(event) => handleValueChange(idx, event.target.value)}
-              onDelete={() => handleDelete(idx)}
+              onChange={(event) =>
+                handleValueChange(idx + 4, event.target.value)
+              }
+              onDelete={() => handleDelete(idx + 4)}
             />
           ))}
           <li ref={bottomRef}></li>
