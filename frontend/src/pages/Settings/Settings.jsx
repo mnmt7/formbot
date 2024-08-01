@@ -42,7 +42,7 @@ export default function Settings() {
       toast("Password updated successfully!");
       navigate("/workspace");
     } catch (err) {
-      toast(err.message);
+      toast("Password not updated. Please try again later!");
     }
   };
 
