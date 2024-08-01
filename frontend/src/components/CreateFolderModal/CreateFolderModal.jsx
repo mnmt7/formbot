@@ -49,8 +49,7 @@ const CreateModal = forwardRef(function CreateModal({ parent }, ref) {
         <Input
           id="folderName"
           placeholder="Enter a folder name"
-          error={nameError}
-          errorText="Required field"
+          errorText={nameError && "Required field"}
           value={name}
           onChange={handleNameChange}
         />
