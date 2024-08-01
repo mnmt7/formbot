@@ -6,6 +6,7 @@ import Input from "../../components/Input/Input";
 import { registerAsync } from "../../store/auth-slice";
 import useInput from "../../hooks/useInput";
 import isUsername from "../../utils/isUsername";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const {
@@ -42,7 +43,7 @@ export default function Register() {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (
@@ -60,7 +61,11 @@ export default function Register() {
 
     const data = { username, email, password, passwordConfirm };
 
-    dispatch(registerAsync(data));
+    try {
+      await dispatch(registerAsync(data)).unwrap();
+    } catch (err) {
+      toast(err.message);
+    }
   };
 
   return (

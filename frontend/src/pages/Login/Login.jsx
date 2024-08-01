@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { isEmail } from "validator";
+import { toast } from "react-toastify";
 
 import AuthForm from "../../components/AuthForm/AuthForm";
 import Input from "../../components/Input/Input";
@@ -19,7 +20,7 @@ export default function Login() {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (isEmailError) {
@@ -29,7 +30,11 @@ export default function Login() {
     if (password.length === 0) return;
 
     const data = { email, password };
-    dispatch(loginAsync(data));
+    try {
+      await dispatch(loginAsync(data)).unwrap();
+    } catch (err) {
+      toast(err.message);
+    }
   };
 
   return (

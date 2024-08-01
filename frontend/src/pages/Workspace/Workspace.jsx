@@ -39,7 +39,12 @@ export default function Workspace() {
         <DeleteModal ref={deleteModalRef} selectedItem={selectedItem} />
       )}
       <div className={classes.header}>
-        <div className={classes.select} onClick={() => setOpenDropdown(true)}>
+        <div
+          className={classes.select}
+          onClick={() =>
+            setOpenDropdown((prevOpenDropdown) => !prevOpenDropdown)
+          }
+        >
           {`${user.username}'s workspace`} <img src={downIcon} alt="" />
           {openDropdown && (
             <div className={classes.dropdowns}>

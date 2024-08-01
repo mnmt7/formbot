@@ -9,8 +9,6 @@ export const fetchFormbot = async (id) => {
 
   const resData = await response.json();
 
-  .log({ resData });
-
   if (!response.ok) {
     throw new Error(resData.message);
   }
@@ -64,8 +62,6 @@ export const fetchFormbotResponses = async (id) => {
   });
 
   const resData = await response.json();
-
-  .log({ responses: resData });
 
   if (!response.ok) {
     throw new Error(resData.message);
