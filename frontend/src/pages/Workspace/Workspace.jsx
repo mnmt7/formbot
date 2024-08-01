@@ -34,7 +34,7 @@ export default function Workspace() {
 
   return (
     <div className={classes.workspace}>
-      <CreateFolderModal parent={currentFolder} ref={createModalRef} />
+      <CreateFolderModal parent={user.rootFolder} ref={createModalRef} />
       {selectedItem && (
         <DeleteModal ref={deleteModalRef} selectedItem={selectedItem} />
       )}
