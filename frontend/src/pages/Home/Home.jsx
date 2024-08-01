@@ -113,7 +113,7 @@ export default function Home() {
               </Link>
             </li>
             <li>
-              <Link to="/formbot/create" className={classes.register}>
+              <Link to="/formbot/new" className={classes.register}>
                 Create a FormBot
               </Link>
             </li>
