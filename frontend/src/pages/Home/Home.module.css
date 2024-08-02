@@ -1,5 +1,5 @@
 .container {
-  max-width: 1500px;
+  max-width: 1350px;
   margin: auto;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .logoHeading {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .nav {
@@ -61,7 +61,7 @@
 .registerBig:link,
 .registerBig:visited {
   padding: 16px 32px;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .register:hover {
@@ -116,6 +116,15 @@
   font-size: 1.4rem;
 }
 
+.section2ImgContainer {
+  width: 500px;
+  aspect-ratio: 1;
+}
+
+.section2Img {
+  width: 100%;
+}
+
 .section3 {
   margin: auto;
   width: 1250px;
@@ -126,6 +135,124 @@
   gap: 24px;
 }
 
+.section3Main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  text-align: left;
+  padding-top: 64px;
+  position: relative;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.redAsterisk {
+  color: #cb5f61;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #ffffffec;
+}
+
+.section3MainSection {
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.messageTxt {
+  background-color: #1e293b;
+  align-self: start;
+}
+
+.hiTxt {
+  background-color: var(--BLUE-COLOR);
+  align-self: end;
+}
+
+.messageTxt,
+.hiTxt {
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.submitBtn {
+  background-color: var(--BLUE-COLOR);
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  align-self: start;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+}
+
+.formInput {
+  padding: 4px;
+  border-radius: 4px;
+  background: none;
+  color: #fff;
+  width: 100%;
+  font-size: 0.9rem;
+  border: 1px solid #444;
+  padding: 8px;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
+.description {
+  height: 70px;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section3MainSection2 {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.tickIcon {
+  position: absolute;
+  right: 25%;
+  transform: translateX(50%);
+}
+
+.crossIcon {
+  position: absolute;
+  left: 25%;
+  transform: translateX(-50%);
+}
+
+.tryImg {
+  position: absolute;
+  right: 0;
+  top: -36px;
+}
 .section4 {
   margin-top: 160px;
   padding: 0 212px;
@@ -144,8 +271,12 @@
 }
 
 .platforms {
-  max-width: 1500px;
+  max-width: 1200px;
   margin: auto;
+}
+
+.featuresImg {
+  width: 530px;
 }
 
 .section5 {
@@ -153,6 +284,10 @@
   display: flex;
   flex-direction: column;
   gap: 54px;
+}
+
+.section5TxtContainer {
+  padding: 0 48px;
 }
 
 .section5Description {
@@ -263,10 +398,10 @@
 }
 
 .sectionHeading2 {
-  font-size: 2.2rem;
+  font-size: 2rem;
 }
 
 .sectionDescription {
   color: #a0aec0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }

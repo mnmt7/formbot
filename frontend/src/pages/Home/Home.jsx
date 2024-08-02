@@ -9,6 +9,11 @@ import feature1 from "../../assets/feature-1.png";
 import feature2 from "../../assets/feature-2.png";
 import platforms from "../../assets/platforms.svg";
 import formbotDemo2 from "../../assets/formbot-demo-2.png";
+import welcomeImg from "../../assets/welcome.png";
+import meImg from "../../assets/me.png";
+import tickIcon from "../../assets/tick.svg";
+import crossIcon from "../../assets/cross.svg";
+import tryImg from "../../assets/try.svg";
 
 import classes from "./Home.module.css";
 import Features from "../../components/Features/Features";
@@ -123,10 +128,14 @@ export default function Home() {
 
       <main>
         <div className={classes.section1}>
-          <img src={designLeft} alt="" />
+          <div className={classes.section2ImgContainer}>
+            <img className={classes.section2Img} src={designLeft} alt="" />
+          </div>
           <div className={classes.section1Main}>
             <h2 className={classes.section1Heading}>
-              Build advanced chatbots visually
+              Build advanced chatbots
+              <br />
+              visually
             </h2>
             <p className={classes.section1Description}>
               Typebot gives you powerful blocks to create unique chat
@@ -141,12 +150,14 @@ export default function Home() {
               Create a FormBot for free
             </Link>
           </div>
-          <img src={designRight} alt="" />
+          <div className={classes.section2ImgContainer}>
+            <img className={classes.section2Img} src={designRight} alt="" />
+          </div>
         </div>
 
         <img src={formbotDemo1} alt="" className={classes.formbotDemo1Img} />
 
-        <div className={classes.section3}>
+        <div className={`${classes.section3} ${classes.container}`}>
           <h2 className={classes.sectionHeading1}>
             Replace your old school forms <br /> with <br /> chatbots
           </h2>
@@ -155,15 +166,120 @@ export default function Home() {
             increase in customer satisfaction and retention and multiply by 3
             your conversion rate compared to classical forms.
           </p>
-          <div>
-            <div></div>
-            <div></div>
+
+          <div className={`${classes.section3Main}`}>
+            <img
+              src={crossIcon}
+              className={classes.crossIcon}
+              alt="Tick Icon"
+            />
+            <img src={tickIcon} className={classes.tickIcon} alt="Cross Icon" />
+            <img
+              src={tryImg}
+              className={classes.tryImg}
+              alt="Try it out text"
+            />
+            <form className={classes.section3MainSection}>
+              <p className={classes.inputContainer}>
+                <label className={classes.label}>
+                  Full name <span className={classes.redAsterisk}>*</span>
+                </label>
+                <input
+                  className={classes.formInput}
+                  type="text"
+                  placeholder="Full name"
+                />
+              </p>
+
+              <p className={classes.inputContainer}>
+                <label className={classes.label}>
+                  Email <span className={classes.redAsterisk}>*</span>
+                </label>
+                <input
+                  className={classes.formInput}
+                  type="text"
+                  placeholder="Email"
+                />
+              </p>
+
+              <div>
+                <p className={classes.label}>
+                  What services are you interested in?
+                  <span className={classes.redAsterisk}>*</span>
+                </p>
+                <p className={classes.checkboxContainer}>
+                  <input
+                    className={classes.checkbox}
+                    type="checkbox"
+                    value="websiteDev"
+                  />
+                  <span className={classes.checkmark}></span>
+                  <label className={classes.label}>Website Dev</label>
+                </p>
+
+                <p className={classes.checkboxContainer}>
+                  <input
+                    className={classes.checkbox}
+                    type="checkbox"
+                    value="contentMarketing"
+                  />
+                  <span className={classes.checkmark}></span>
+
+                  <label className={classes.label}>Content Marketing</label>
+                </p>
+
+                <p className={classes.checkboxContainer}>
+                  <input
+                    className={classes.checkbox}
+                    type="checkbox"
+                    value="socialMedia"
+                  />
+                  <span className={classes.checkmark}></span>
+
+                  <label className={classes.label}>Social Media</label>
+                </p>
+
+                <p className={classes.checkboxContainer}>
+                  <input
+                    className={classes.checkbox}
+                    type="checkbox"
+                    value="uxUiDesign"
+                  />
+                  <span className={classes.checkmark}></span>
+
+                  <label className={classes.label}>UX/UI Design</label>
+                </p>
+              </div>
+              <p className={classes.inputContainer}>
+                <label className={classes.label}>Additional information</label>
+                <textarea
+                  className={`${classes.formInput} ${classes.description}`}
+                  placeholder="Additional information"
+                ></textarea>
+              </p>
+
+              <button className={classes.submitBtn}>Submit</button>
+            </form>
+            <div
+              className={`${classes.section3MainSection2} ${classes.section3MainSection}`}
+            >
+              <img src={meImg} alt="" />
+              <div className={classes.messages}>
+                <p className={classes.messageTxt}>
+                  Welcome to <strong>AA</strong> (Awesome Agency)
+                </p>
+                <p className={classes.messageTxt}>
+                  <img src={welcomeImg} alt="" />
+                </p>
+                <p className={classes.hiTxt}> Hi</p>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className={`${classes.section4} ${classes.container}`}>
           <div className={classes.section4SubSection}>
-            <img src={feature1} alt="" />
+            <img className={classes.featuresImg} src={feature1} alt="" />
             <div>
               <h3 className={classes.sectionHeading2}>
                 Easy building experience
@@ -188,14 +304,16 @@ export default function Home() {
                 instructions. Your typebot will always feel &quot;native&quot;.
               </p>
             </div>
-            <img src={feature2} alt="" />
+            <img className={classes.featuresImg} src={feature2} alt="" />
           </div>
         </div>
 
         <div className={`${classes.section5} ${classes.container}`}>
           <img className={classes.platforms} src={platforms} alt="" />
-          <div>
-            <h2 className={classes.sectionHeading2}>
+          <div className={classes.section5TxtContainer}>
+            <h2
+              className={`${classes.sectionHeading2} ${classes.section5Heading}`}
+            >
               Integrate with any platform
             </h2>
             <p

@@ -9,9 +9,9 @@
 }
 
 .customizeText {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
-  padding: 32px 0;
+  padding: 24px 0;
   text-align: center;
   border-top: 2px solid #33333363;
   border-bottom: 2px solid #33333363;
@@ -37,6 +37,8 @@
 .themeImg {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  width: 150px;
+  height: 80px;
 }
 
 .themeName {
