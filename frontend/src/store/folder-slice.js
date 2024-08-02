@@ -43,6 +43,10 @@ const folderSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchFolderAsync.fulfilled, (state, action) => {
+        action.payload.data.folders =
+          action.payload.data.folders.length === 0
+            ? state.folder.folders
+            : action.payload.data.folders;
         state.folder = action.payload.data;
       })
       .addCase(createFolderAsync.fulfilled, (state, action) => {

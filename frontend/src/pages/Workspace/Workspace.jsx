@@ -9,6 +9,7 @@ import CreateFolderModal from "../../components/CreateFolderModal/CreateFolderMo
 import classes from "./Workspace.module.css";
 import { fetchFolderAsync, selectFolder } from "../../store/folder-slice";
 import downIcon from "../../assets/down.svg";
+import { fetchFolder } from "../../api/folder";
 
 export default function Workspace() {
   const user = useSelector(selectAuthUser);
@@ -19,6 +20,7 @@ export default function Workspace() {
 
   const folder = useSelector(selectFolder);
   const folders = folder ? folder.folders : [];
+  // const [folders, setFolders] = useState([]);
   const formbots = folder ? folder.formbots : [];
 
   const [currentFolder, setCurrentFolder] = useState(user.rootFolder);
@@ -31,6 +33,13 @@ export default function Workspace() {
   useEffect(() => {
     dispatch(fetchFolderAsync(currentFolder));
   }, [dispatch, currentFolder]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await fetchFolderAsync(user.rootFolder);
+  //     setFolders(res.data.data.folders);
+  //   })();
+  // }, [user]);
 
   return (
     <div className={classes.workspace}>
@@ -79,9 +88,22 @@ export default function Workspace() {
             </button>
           </li>
           {folders.map((folder) => (
-            <li key={folder._id}>
+            <li
+              key={folder._id}
+              className={
+                currentFolder === folder._id ? classes.activeFolder : ""
+              }
+            >
               <button className={classes.folder}>
-                <span onClick={() => setCurrentFolder(folder._id)}>
+                <span
+                  onClick={() => {
+                    if (currentFolder != folder._id) {
+                      setCurrentFolder(folder._id);
+                    } else {
+                      setCurrentFolder(user.rootFolder);
+                    }
+                  }}
+                >
                   {folder.name}
                 </span>
                 <img
