@@ -11,6 +11,15 @@
   margin-top: 48px;
 }
 
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .table {
   margin: auto;
 }
