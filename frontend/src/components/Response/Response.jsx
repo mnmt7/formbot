@@ -98,14 +98,14 @@ export default function Response({ id }) {
                 {messages.map((message) => {
                   let responseToMessage = response[message._id];
 
+                  if (!responseToMessage) {
+                    return <td></td>;
+                  }
+
                   if (message.valueType === "date") {
                     responseToMessage.response = formatDate(
                       new Date(responseToMessage.response)
                     );
-                  }
-
-                  if (!responseToMessage) {
-                    return <td></td>;
                   }
 
                   return (
