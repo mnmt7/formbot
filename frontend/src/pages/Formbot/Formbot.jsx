@@ -25,6 +25,8 @@ export default function Formbot() {
 
   const [copied, setCopied] = useState(false);
 
+  const [saving, setSaving] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,6 +109,8 @@ export default function Formbot() {
       return;
     }
 
+    setSaving(true);
+
     const data = {
       name: formName,
       messages,
@@ -123,6 +127,8 @@ export default function Formbot() {
       await updateFormbot(data, id);
       toast("Formbot updated!");
     }
+
+    setSaving(false);
   };
 
   const handleCopy = async () => {
@@ -200,8 +206,12 @@ export default function Formbot() {
             </button>
           </li>
           <li>
-            <button onClick={handleSave} className={classes.saveBtn}>
-              Save
+            <button
+              onClick={handleSave}
+              className={classes.saveBtn}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save"}
             </button>
           </li>
 

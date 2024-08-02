@@ -3,7 +3,12 @@ import { isEmail, isStrongPassword } from "validator";
 
 import isUsername from "../../utils/isUsername";
 import Input from "../../components/Input/Input";
-import { logoutAsync, selectAuthUser } from "../../store/auth-slice";
+import {
+  logoutAsync,
+  selectAuthStatus,
+  selectAuthUser,
+  updatePasswordAsync,
+} from "../../store/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import classes from "./Settings.module.css";
 import logoutIcon from "../../assets/logout.svg";
@@ -13,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const user = useSelector(selectAuthUser);
+  const status = useSelector(selectAuthStatus);
 
   const { value: passwordOld, handleChange: handlePasswordOldChange } =
     useInput("");
@@ -38,11 +44,11 @@ export default function Settings() {
 
     const data = { passwordOld, passwordNew };
     try {
-      await updatePassword(data);
+      await dispatch(updatePasswordAsync(data)).unwrap();
       toast("Password updated successfully!");
       navigate("/workspace");
     } catch (err) {
-      toast("Password not updated. Please try again later!");
+      toast(err.message);
     }
   };
 
@@ -68,7 +74,9 @@ export default function Settings() {
             value={passwordNew}
             onChange={handlePasswordNewChange}
           />
-          <button className={classes.updateBtn}>Update</button>
+          <button className={classes.updateBtn} disabled={status === "loading"}>
+            {status === "loading" ? "Updating..." : "Update"}
+          </button>
         </form>
 
         <button
