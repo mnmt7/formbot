@@ -19,7 +19,7 @@ export default function Workspace() {
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const folder = useSelector(selectFolder);
-  const folders = folder ? folder.folders : [];
+  const folders = folder?.folders ? folder.folders : [];
   // const [folders, setFolders] = useState([]);
   const formbots = folder ? folder.formbots : [];
 
