@@ -50,7 +50,11 @@ const folderSlice = createSlice({
         state.folder = action.payload.data;
       })
       .addCase(createFolderAsync.fulfilled, (state, action) => {
-        state.folder.folders = [action.payload.data];
+        const newFolders = state.folder.folders
+          ? [...state.folder.folders]
+          : [];
+        newFolders.push(action.payload.data);
+        state.folder.folders = newFolders;
       })
       .addCase(deleteFolderAsync.fulfilled, (state, action) => {
         state.folder.folders = state.folder.folders.filter((folder) => {
