@@ -10,11 +10,15 @@ import {
   selectAuthStatus,
   selectAuthUser,
 } from "../../store/auth-slice";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export default function AuthForm({ isLogin, children, onSubmit }) {
   const user = useSelector(selectAuthUser);
   const status = useSelector(selectAuthStatus);
   const error = useSelector(selectAuthError);
+
+  const isLoading = status === "loading";
 
   if (user) {
     return <Navigate to="/workspace" />;
@@ -39,15 +43,17 @@ export default function AuthForm({ isLogin, children, onSubmit }) {
         </svg>
       </Link>
       <form className={classes.form} onSubmit={onSubmit}>
-        <p className={classes.error}>{error}</p>
         {children}
         <div>
-          <button className={classes.submitBtn} disabled={status === "loading"}>
+          <button
+            className={`${isLoading ? classes.disabled : classes.submitBtn}`}
+            disabled={isLoading}
+          >
             {isLogin
-              ? status === "loading"
+              ? isLoading
                 ? "Logging In..."
                 : "Log In"
-              : status === "loading"
+              : isLoading
               ? "Signing Up..."
               : "Sign Up"}
           </button>

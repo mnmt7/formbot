@@ -1,14 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useDispatch } from "react-redux";
 
 import classes from "./DeleteModal.module.css";
-import {
-  deleteFolderAsync,
-  deleteFormbotAsync,
-} from "../../store/folder-slice";
 
-const DeleteModal = forwardRef(function DeleteModal({ selectedItem }, ref) {
+const DeleteModal = forwardRef(function DeleteModal({ title, onDelete }, ref) {
   useImperativeHandle(ref, () => ({
     open() {
       dialogRef.current.showModal();
@@ -17,22 +12,7 @@ const DeleteModal = forwardRef(function DeleteModal({ selectedItem }, ref) {
 
   const dialogRef = useRef();
 
-  const title = `Are you sure you want to 
-delete this ${selectedItem.type} ?`;
-
   const closeModal = () => dialogRef.current.close();
-
-  const dispatch = useDispatch();
-
-  const handleDelete = () => {
-    if (selectedItem.type === "folder") {
-      dispatch(deleteFolderAsync(selectedItem.id));
-    } else if (selectedItem.type === "formbot") {
-      dispatch(deleteFormbotAsync(selectedItem.id));
-    }
-
-    closeModal();
-  };
 
   return createPortal(
     <dialog ref={dialogRef} className={classes.dialog} onClick={closeModal}>
@@ -43,7 +23,10 @@ delete this ${selectedItem.type} ?`;
         <p className={classes.title}>{title}</p>
         <div className={classes.btns}>
           <button
-            onClick={handleDelete}
+            onClick={() => {
+              onDelete();
+              closeModal();
+            }}
             className={`${classes.btn} ${classes.confirmBtn}`}
           >
             Confirm

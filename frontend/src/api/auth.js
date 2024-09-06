@@ -56,8 +56,8 @@ export const checkAuth = async () => {
   });
 
   const resData = await response.json();
-
   if (!response.ok) {
+    console.log({ resData });
     throw new Error(resData.message);
   }
 

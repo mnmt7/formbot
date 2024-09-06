@@ -1,18 +1,28 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import { logoutAsync, selectAuthUser } from "../../store/auth-slice";
-import deleteIcon from "../../assets/delete.svg";
 import DeleteModal from "../../components/DeleteModal/DeleteModal";
 import CreateFolderModal from "../../components/CreateFolderModal/CreateFolderModal";
 import classes from "./Workspace.module.css";
-import { fetchFolderAsync, selectFolder } from "../../store/folder-slice";
+import {
+  fetchFolderAsync,
+  selectFolder,
+  selectFolderStatus,
+  deleteFolderAsync,
+  deleteFormbotAsync,
+} from "../../store/folder-slice";
 import downIcon from "../../assets/down.svg";
-import { fetchFolder } from "../../api/folder";
+import Folder from "../../components/Folder/Folder";
+import Formbot from "../../components/Formbot/Formbot";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import { loaderActions } from "../../store/loader-slice";
 
 export default function Workspace() {
   const user = useSelector(selectAuthUser);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -20,8 +30,9 @@ export default function Workspace() {
 
   const folder = useSelector(selectFolder);
   const folders = folder?.folders ? folder.folders : [];
-  // const [folders, setFolders] = useState([]);
   const formbots = folder ? folder.formbots : [];
+
+  const folderStatus = useSelector(selectFolderStatus);
 
   const [currentFolder, setCurrentFolder] = useState(user.rootFolder);
 
@@ -29,30 +40,91 @@ export default function Workspace() {
 
   const createModalRef = useRef();
   const deleteModalRef = useRef();
+  const dropdownRef = useRef();
 
   useEffect(() => {
+    // if (folderStatus === "idle") {
     dispatch(fetchFolderAsync(currentFolder));
-  }, [dispatch, currentFolder]);
+    // }
+  }, [
+    dispatch,
+    //  folderStatus,
+    currentFolder,
+  ]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await fetchFolderAsync(user.rootFolder);
-  //     setFolders(res.data.data.folders);
-  //   })();
-  // }, [user]);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, []);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpenDropdown(false);
+    }
+  };
+
+  const handleEscKey = (event) => {
+    if (event.key === "Escape") {
+      setOpenDropdown(false);
+    }
+  };
+
+  const handleFolderClick = (folder) => {
+    console.log(currentFolder, folder._id);
+    if (currentFolder != folder._id) {
+      setCurrentFolder(folder._id);
+    } else {
+      setCurrentFolder(user.rootFolder);
+    }
+  };
+
+  const handleFolderDelete = (folder) => {
+    setSelectedItem({ type: "folder", id: folder._id });
+    deleteModalRef.current?.open();
+  };
+
+  const handleFormbotDelete = (formbot) => {
+    setSelectedItem({ type: "formbot", id: formbot._id });
+    deleteModalRef.current?.open();
+  };
+
+  const handleDelete = () => {
+    let deletePromise;
+    if (selectedItem.type === "folder") {
+      deletePromise = dispatch(deleteFolderAsync(selectedItem.id)).unwrap();
+    } else if (selectedItem.type === "formbot") {
+      deletePromise = dispatch(deleteFormbotAsync(selectedItem.id)).unwrap();
+    }
+
+    toast.promise(deletePromise, {
+      pending: `Deleting ${selectedItem.type}...`,
+      success: `Deleted ${selectedItem.type} successfully`,
+      error: "Deletion failed",
+    });
+  };
 
   return (
     <div className={classes.workspace}>
       <CreateFolderModal parent={user.rootFolder} ref={createModalRef} />
-      {selectedItem && (
-        <DeleteModal ref={deleteModalRef} selectedItem={selectedItem} />
-      )}
+      <DeleteModal
+        ref={deleteModalRef}
+        title={`Are you sure you want to 
+          delete this ${selectedItem?.type}?`}
+        onDelete={handleDelete}
+      />
+
       <div className={classes.header}>
         <div
           className={classes.select}
           onClick={() =>
             setOpenDropdown((prevOpenDropdown) => !prevOpenDropdown)
           }
+          ref={dropdownRef}
         >
           {`${user.username}'s workspace`} <img src={downIcon} alt="" />
           {openDropdown && (
@@ -62,6 +134,7 @@ export default function Workspace() {
                 onClick={() => {
                   navigate("/settings");
                   setOpenDropdown(false);
+                  dispatch(loaderActions.showLoader());
                 }}
               >
                 Settings
@@ -87,64 +160,41 @@ export default function Workspace() {
               <span>Create a folder</span>
             </button>
           </li>
-          {folders.map((folder) => (
-            <li
-              key={folder._id}
-              className={
-                currentFolder === folder._id ? classes.activeFolder : ""
-              }
-            >
-              <button className={classes.folder}>
-                <span
-                  onClick={() => {
-                    if (currentFolder != folder._id) {
-                      setCurrentFolder(folder._id);
-                    } else {
-                      setCurrentFolder(user.rootFolder);
-                    }
-                  }}
-                >
-                  {folder.name}
-                </span>
-                <img
-                  src={deleteIcon}
-                  alt="Delete Icon"
-                  className={classes.deleteIcon}
-                  onClick={() => {
-                    setSelectedItem({ type: "folder", id: folder._id });
-                    deleteModalRef.current?.open();
-                  }}
-                />
-              </button>
-            </li>
-          ))}
+          {folderStatus === "loading" ? (
+            <Skeleton count={6} width={100} />
+          ) : (
+            folders.map((folder) => (
+              <Folder
+                key={folder._id}
+                folder={folder}
+                currentFolder={currentFolder}
+                onFolderClick={() => handleFolderClick(folder)}
+                onFolderDelete={() => handleFolderDelete(folder)}
+              />
+            ))
+          )}
         </ul>
         <ul className={classes.formbots}>
           <li>
             <button
               className={classes.newFormbot}
-              onClick={() => navigate(`/formbot/new?folder=${currentFolder}`)}
+              onClick={() => navigate(`/formbots/new?folder=${currentFolder}`)}
             >
               <PlusIcon className={classes.plusIcon} />
               <span>Create a formbot</span>
             </button>
           </li>
-          {formbots.map((formbot) => (
-            <li className={classes.formbotContainer} key={formbot._id}>
-              <Link to={`/formbot/${formbot._id}`} className={classes.formbot}>
-                {formbot.name}
-              </Link>
-              <img
-                src={deleteIcon}
-                alt="Delete Icon"
-                className={classes.deleteFormbotIcon}
-                onClick={() => {
-                  setSelectedItem({ type: "formbot", id: formbot._id });
-                  deleteModalRef.current?.open();
-                }}
+          {folderStatus === "loading" ? (
+            <Skeleton width={180} height={210} count={11} />
+          ) : (
+            formbots.map((formbot) => (
+              <Formbot
+                key={formbot._id}
+                formbot={formbot}
+                onFormbotDelete={() => handleFormbotDelete(formbot)}
               />
-            </li>
-          ))}
+            ))
+          )}
         </ul>
       </div>
     </div>

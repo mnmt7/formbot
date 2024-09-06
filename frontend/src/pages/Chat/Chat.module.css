@@ -1,17 +1,17 @@
 .chat {
-  max-height: vh;
+  /* max-height: vh; */
   /* min-height: 100vh; */
   /* display: grid; */
   /* grid-template-rows: 1fr auto; */
-  padding: 16px 8px 0 8px;
+
+  max-width: 600px;
+  margin: auto;
+  padding: 16px 8px 32px 8px;
+  /* border: 1px solid red; */
 }
 
 @media screen and (min-width: 768px) {
   .chat {
-    width: 600px;
-    margin: auto;
-    /* border: 1px solid red; */
-    padding: 0;
     padding-top: 75px;
   }
 }
@@ -26,16 +26,41 @@
   height: 28px;
 }
 
+.bubbleImgShiftDown {
+  animation: shiftDown 500ms;
+}
+
+@keyframes shiftDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .messageContainer {
-  display: flex;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+
   align-items: center;
   gap: 8px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .message {
   background-color: #f5f5f5;
   padding: 6px 12px;
   border-radius: 4px;
+  animation: fadeIn 1s;
 }
 
 .bubble {
@@ -52,8 +77,10 @@
   border: none;
   border-radius: 4px;
   color: #fff;
-  width: 36px;
-  aspect-ratio: 1;
+  min-width: 36px;
+  /* min-height: 36px; */
+  padding: 8px;
+  /* aspect-ratio: 1; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,13 +102,17 @@
 
   justify-content: end;
   gap: 8px;
-  padding: 16px 0 32px 0;
-  margin-top: 16px;
+  /* padding: 16px 0 32px 0; */
+  /* padding: 16px 0 0 0; */
+
+  margin-top: 32px;
 
   background-color: #fff;
 
-  position: sticky;
-  bottom: 0;
+  animation: fadeIn 1s;
+
+  /* position: sticky;
+  bottom: 0; */
 }
 
 .userInput {
@@ -107,6 +138,7 @@
 .nonTextMessage {
   width: 200px;
   border-radius: 4px;
+  animation: fadeIn 1s;
 }
 
 .ratingContainer {
@@ -120,7 +152,7 @@
 .ratingActive {
   background-color: var(--BLUE-COLOR);
   font-size: 0.8rem;
-  height: 22px;
+  height: 30px;
   aspect-ratio: 1;
   display: flex;
   justify-content: center;
@@ -138,7 +170,37 @@
   position: relative;
 }
 
-.disabled {
-  background-color: #777777;
+.sentMessage {
+  background-color: #ff8e21;
   color: #fff;
+
+  border: none;
+  padding: 8px 12px;
+
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px #0000005c;
+}
+
+.loader {
+  width: 32px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #00000084 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1.5s infinite linear;
+}
+
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
 }

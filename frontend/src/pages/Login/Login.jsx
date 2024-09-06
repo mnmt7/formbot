@@ -24,7 +24,8 @@ export default function Login() {
     event.preventDefault();
 
     if (isEmailError) {
-      return displayEmailError();
+      displayEmailError();
+      return;
     }
 
     if (password.length === 0) return;
@@ -33,7 +34,7 @@ export default function Login() {
     try {
       await dispatch(loginAsync(data)).unwrap();
     } catch (err) {
-      toast(err.message);
+      toast.error(err.message);
     }
   };
 

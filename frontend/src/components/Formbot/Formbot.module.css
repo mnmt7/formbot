@@ -1,0 +1,56 @@
+.formbotContainer {
+  position: relative;
+}
+
+.formbot:link,
+.formbot:visited {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  width: 180px;
+  height: 210px;
+  background-color: var(--GREY-1-COLOR);
+  color: #fff;
+  text-decoration: none;
+}
+
+.formbot:hover {
+  opacity: 0.9;
+}
+
+.deleteFormbotIcon {
+  height: 1rem;
+  cursor: pointer;
+}
+
+.deleteFormbotIcon:hover {
+  stroke: #e13232;
+}
+
+.deleteFormbotIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  height: 20px;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+
+  background-color: #444;
+  border: none;
+
+  padding: 4px;
+
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  z-index: 1;
+}

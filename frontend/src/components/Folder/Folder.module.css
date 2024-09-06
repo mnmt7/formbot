@@ -1,0 +1,43 @@
+.folder {
+  display: flex;
+  /* gap: 8px; */
+  align-items: center;
+  background-color: #333334;
+  border-radius: 4px;
+}
+
+.activeFolder {
+  border: 2px solid var(--BLUE-COLOR);
+}
+
+.folderBtn {
+  background-color: #333334;
+  color: #fff;
+  border: none;
+  padding: 6px 6px 6px 12px;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 4px;
+  /* border: 1px solid red; */
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  /* border: 1px solid blue; */
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.deleteIcon,
+.deleteFormbotIcon {
+  height: 1rem;
+  cursor: pointer;
+}
+
+.deleteIcon:hover,
+.deleteFormbotIcon:hover {
+  stroke: #e13232;
+}

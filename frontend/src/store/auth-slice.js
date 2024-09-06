@@ -49,6 +49,7 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.status = "idle";
+        state.error = action.error.message;
       })
       .addCase(registerAsync.pending, (state, action) => {
         state.status = "loading";

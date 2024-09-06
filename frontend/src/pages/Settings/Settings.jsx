@@ -45,7 +45,7 @@ export default function Settings() {
     const data = { passwordOld, passwordNew };
     try {
       await dispatch(updatePasswordAsync(data)).unwrap();
-      toast("Password updated successfully!");
+      toast.success("Password updated successfully!");
       navigate("/workspace");
     } catch (err) {
       toast(err.message);
@@ -74,7 +74,12 @@ export default function Settings() {
             value={passwordNew}
             onChange={handlePasswordNewChange}
           />
-          <button className={classes.updateBtn} disabled={status === "loading"}>
+          <button
+            className={`${classes.updateBtn} ${
+              status === "loading" ? classes.disabled : ""
+            }`}
+            disabled={status === "loading"}
+          >
             {status === "loading" ? "Updating..." : "Update"}
           </button>
         </form>

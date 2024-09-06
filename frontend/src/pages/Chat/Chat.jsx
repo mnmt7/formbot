@@ -1,76 +1,76 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
+import { isLength, isMobilePhone, isNumeric } from "validator";
+import isEmail from "validator/lib/isEmail";
+import { toast } from "react-toastify";
 
 import { fetchChat, sendResponse } from "../../api/chat";
 import classes from "./Chat.module.css";
 import botImg from "../../assets/bot.svg";
 import sendIcon from "../../assets/send.svg";
-import { isLength, isMobilePhone, isNumeric } from "validator";
-import isEmail from "validator/lib/isEmail";
 import formatDate from "../../utils/formatDate";
-import { toast } from "react-toastify";
-
-const dummyMessage = {
-  type: "bubble",
-  valueType: "text",
-  value: "...",
-};
 
 export default function Chat() {
   const { id } = useParams();
 
+  const [currMessageIdx, setCurrMessageIdx] = useState(0);
   const [messages, setMessages] = useState([]);
   const [response, setResponse] = useState(null);
   const [responseId, setResponseId] = useState(null);
   const [nextMessage, setNextMessage] = useState(null);
   const [error, setError] = useState("");
-  const chatRef = useRef();
+  const [isFetching, setIsFetching] = useState(false);
+  const loaderRef = useRef();
 
   useEffect(() => {
     (async () => {
       try {
+        setIsFetching(true);
         const res = await fetchChat(id);
-        setMessages(res.data.data.messages);
+        processResponse(true, res);
+        // setMessages(res.data.data.messages);
 
-        if (res.data.data.response) {
-          const responseObj = {
-            ...res.data.data.response,
-            value: res.data.data.response.value || "",
-          };
-          setResponse(responseObj);
-        } else {
-          setResponse(null);
-        }
+        // if (res.data.data.response) {
+        //   const responseObj = {
+        //     ...res.data.data.response,
+        //     value: res.data.data.response.value || "",
+        //   };
+        //   setResponse(responseObj);
+        // } else {
+        //   setResponse(null);
+        // }
 
-        setResponseId(res.data.data.responseId);
-        setNextMessage(res.data.data.nextMessage);
+        // setResponseId(res.data.data.responseId);
+        // setNextMessage(res.data.data.nextMessage);
       } catch (err) {
-        toast(err.message);
+        toast.error(err.message);
+      } finally {
+        setIsFetching(false);
       }
     })();
   }, [id]);
 
   useEffect(() => {
-    chatRef.current.scrollTop = chatRef.current.scrollHeight;
-  }, [messages]);
+    if (currMessageIdx < messages.length - 1) {
+      setTimeout(
+        () => setCurrMessageIdx((prevCurrMessageIdx) => prevCurrMessageIdx + 1),
+        1000
+      );
+    }
+  }, [currMessageIdx, messages.length]);
 
-  const handleInputChange = (event) => {
-    setError("");
-    setResponse((prevResponse) => ({
-      ...prevResponse,
-      value: event.target.value,
-    }));
-  };
-
-  const processResponse = async (res) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      response,
-      ...res.data.data.messages,
-    ]);
+  const processResponse = async (isInitial, res) => {
+    if (isInitial) {
+      setMessages(res.data.data.messages);
+    } else {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        // response,
+        ...res.data.data.messages,
+      ]);
+    }
 
     if (res.data.data.response) {
       const responseObj = {
@@ -86,7 +86,7 @@ export default function Chat() {
     setNextMessage(res.data.data.nextMessage);
   };
 
-  const handleSendResponse = async () => {
+  const handleSendResponse = useCallback(async () => {
     const result = validateResponse(response);
 
     if (result.err) {
@@ -106,19 +106,86 @@ export default function Chat() {
       nextMessage,
     };
 
-    const res = await sendResponse(id, data);
-    processResponse(res);
+    setMessages((prevMessages) => [...prevMessages, response]);
+    setCurrMessageIdx((prevCurrMessageIdx) => prevCurrMessageIdx + 1);
+    setResponse(null);
+    setIsFetching(true);
+    // setTimeout(() => setIsFetching(true), 100);
+
+    try {
+      const res = await sendResponse(id, data);
+      processResponse(false, res);
+    } catch (err) {
+      toast.error("Response not sent! Try again");
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages];
+        newMessages.pop();
+        return newMessages;
+      });
+
+      setResponse(response);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [id, nextMessage, response, responseId]);
+
+  const handleEnterKey = useCallback(
+    (event) => event.key === "Enter" && handleSendResponse(),
+    [handleSendResponse]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleEnterKey);
+    return () => document.removeEventListener("keydown", handleEnterKey);
+  }, [handleEnterKey]);
+
+  useEffect(() => {
+    if (loaderRef.current) {
+      loaderRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currMessageIdx]);
+
+  const handleInputChange = (event) => {
+    setError("");
+    setResponse((prevResponse) => ({
+      ...prevResponse,
+      value: event.target.value,
+    }));
   };
 
+  console.log({ messages, isFetching });
+
   return (
-    <div ref={chatRef} className={classes.chat}>
+    <div className={classes.chat}>
       <ul className={classes.messages}>
-        {messages.map((message) => (
-          <ChatMessage key={message._id} message={message} />
-        ))}
+        {messages.map((message, idx, arr) =>
+          idx <= currMessageIdx ? (
+            <ChatMessage
+              key={message._id}
+              message={message}
+              showDP={idx === arr.length - 1 || arr[idx + 1].type === "input"}
+            />
+          ) : undefined
+        )}
+
+        {(isFetching || currMessageIdx < messages.length - 1) && (
+          <li className={classes.messageContainer} ref={loaderRef}>
+            <img src={botImg} alt="Bot Image" className={classes.bubbleImg} />
+            <div className={classes.loader} />
+          </li>
+        )}
       </ul>
 
-      {response ? (
+      {response && !(isFetching || currMessageIdx < messages.length - 1) && (
+        <UserResponse
+          response={response}
+          handleSendResponse={handleSendResponse}
+          handleInputChange={handleInputChange}
+          error={error}
+        />
+      )}
+
+      {/* {response ? (
         <UserResponse
           response={response}
           handleSendResponse={handleSendResponse}
@@ -127,7 +194,7 @@ export default function Chat() {
         />
       ) : (
         <div className={classes.userInputContainer} />
-      )}
+      )} */}
     </div>
   );
 }
@@ -149,13 +216,17 @@ function validateResponse(response) {
   return { err };
 }
 
-function ChatMessage({ message }) {
+function ChatMessage({ message, showDP }) {
   let content = [];
 
   if (message.type === "bubble") {
     content = (
-      <>
-        <img src={botImg} alt="Bot Image" className={classes.bubbleImg} />
+      <div className={classes.messageContainer}>
+        {showDP ? (
+          <img src={botImg} alt="Bot Image" className={classes.bubbleImg} />
+        ) : (
+          <div />
+        )}
         {message.valueType === "text" && (
           <div className={classes.message}>{message.value}</div>
         )}
@@ -169,40 +240,47 @@ function ChatMessage({ message }) {
             controls
           />
         )}
-      </>
+      </div>
     );
-  } else if (message.valueType === "rating") {
+  }
+  // else if (message.valueType === "rating") {
+  //   content = (
+  //     <>
+  //       <RatingContainer value={message.value} disabled={true} />
+  //       <button className={`${classes.sendBtn} ${classes.disabled}`}>
+  //         <img src={sendIcon} alt="" className={classes.sendIcon} />
+  //       </button>
+  //     </>
+  //   );
+  // } else if (message.valueType === "button") {
+  //   content = <div className={classes.sentBtn}>{message.value}</div>;
+  // }
+  else {
     content = (
-      <>
-        <RatingContainer value={message.value} disabled={true} />
-        <button className={`${classes.sendBtn} ${classes.disabled}`}>
-          <img src={sendIcon} alt="" className={classes.sendIcon} />
-        </button>
-      </>
-    );
-  } else if (message.valueType === "button") {
-    content = <div className={classes.sentBtn}>{message.value}</div>;
-  } else {
-    content = (
-      <>
-        <UserInput
-          value={
-            message.valueType === "date"
-              ? formatDate(message.value)
-              : message.value
-          }
-          disabled={true}
-        />
-        <button className={`${classes.sendBtn} ${classes.disabled}`}>
-          <img src={sendIcon} alt="" className={classes.sendIcon} />
-        </button>
-      </>
+      <div className={classes.sentMessage}>
+        {message.valueType === "date"
+          ? formatDate(message.value)
+          : message.value}
+      </div>
+      // <>
+      //   <UserInput
+      //     value={
+      //       message.valueType === "date"
+      //         ? formatDate(message.value)
+      //         : message.value
+      //     }
+      //     disabled={true}
+      //   />
+      //   <button className={`${classes.sendBtn} ${classes.disabled}`}>
+      //     <img src={sendIcon} alt="" className={classes.sendIcon} />
+      //   </button>
+      // </>
     );
   }
 
   return (
     <li className={message.type === "input" ? classes.input : classes.bubble}>
-      <div className={classes.messageContainer}>{content}</div>
+      {content}
     </li>
   );
 }
@@ -213,6 +291,13 @@ function UserResponse({
   handleInputChange,
   error,
 }) {
+  const userInputRef = useRef();
+  useEffect(() => {
+    if (userInputRef.current) {
+      userInputRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   let content;
 
   if (response.valueType === "button") {
@@ -248,7 +333,7 @@ function UserResponse({
   }
 
   return (
-    <div className={classes.userInputContainer}>
+    <div className={classes.userInputContainer} ref={userInputRef}>
       {content}
       {response.valueType !== "button" && (
         <button onClick={handleSendResponse} className={classes.sendBtn}>

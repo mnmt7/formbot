@@ -2,7 +2,7 @@ import classes from "./Input.module.css";
 
 export default function Input({ id, label, error, errorText, ...props }) {
   return (
-    <p className={classes.inputContainer}>
+    <div className={classes.inputContainer}>
       {label && (
         <label
           htmlFor={id}
@@ -17,6 +17,6 @@ export default function Input({ id, label, error, errorText, ...props }) {
         className={`${classes.input}  ${errorText ? classes.inputError : ""}`}
       />
       {errorText && <p className={classes.error}>{errorText}</p>}
-    </p>
+    </div>
   );
 }

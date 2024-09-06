@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { fetchFormbotResponses } from "../../api/formbot";
 import classes from "./Response.module.css";
 import formatDate from "../../utils/formatDate";
-import { toast } from "react-toastify";
+import Skeleton from "../Skeleton/Skeleton";
 
 export default function Response({ id }) {
   const [messages, setMessages] = useState([]);
   const [responses, setResponses] = useState([]);
   const [views, setViews] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
 
   const starts = responses.length;
   const completionRate = Math.round((starts / views) * 100);
@@ -20,6 +22,7 @@ export default function Response({ id }) {
 
     (async () => {
       try {
+        setIsFetching(true);
         const response = await fetchFormbotResponses(id);
         setMessages(response.data.data.messages);
 
@@ -28,9 +31,25 @@ export default function Response({ id }) {
         setViews(response.data.data.views);
       } catch (err) {
         toast(err.message);
+      } finally {
+        setIsFetching(false);
       }
     })();
   }, [id]);
+
+  if (isFetching) {
+    return (
+      <div className={classes.main}>
+        <ul className={classes.stats}>
+          <Skeleton count={3} height={77} width={130} />
+        </ul>
+
+        <div className={classes.skeletonContainer}>
+          <Skeleton count={1} height={500} width={700} />
+        </div>
+      </div>
+    );
+  }
 
   if (responses.length === 0) {
     return (

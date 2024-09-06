@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -13,11 +11,19 @@ import Protected from "./components/Protected/Protected";
 import Settings from "./pages/Settings/Settings";
 import Formbot from "./pages/Formbot/Formbot";
 import Chat from "./pages/Chat/Chat";
+import store from "./store";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    // errorElement: <>error</>,
+    loader: async () => {
+      try {
+        return await store.dispatch(checkAuthAsync()).unwrap();
+      } catch (error) {
+        return "";
+      }
+    },
+    // element: <Root />,
     children: [
       {
         index: true,
@@ -48,28 +54,22 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "formbot/:id",
+        path: "formbots/:id",
         element: (
           <Protected>
             <Formbot />
           </Protected>
         ),
       },
-      {
-        path: "chat/:id",
-        element: <Chat />,
-      },
     ],
+  },
+  {
+    path: "/chat/:id",
+    element: <Chat />,
   },
 ]);
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(checkAuthAsync());
-  }, [dispatch]);
-
   return <RouterProvider router={router} />;
 }
 

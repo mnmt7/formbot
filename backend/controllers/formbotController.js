@@ -35,7 +35,7 @@ exports.createFormbot = catchAsync(async (req, res, next) => {
   const formbot = await Formbot.create({
     name,
     theme,
-    messages: newMessages,
+    messages,
     folder,
     user: req.user._id,
   });

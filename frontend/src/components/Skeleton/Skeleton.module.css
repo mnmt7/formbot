@@ -1,0 +1,12 @@
+.skeleton {
+  background-color: #333334;
+  border: none;
+  border-radius: 4px;
+  animation: skeleton 1s ease infinite alternate;
+}
+
+@keyframes skeleton {
+  to {
+    opacity: 0.5;
+  }
+}

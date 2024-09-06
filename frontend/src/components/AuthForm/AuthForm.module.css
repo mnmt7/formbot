@@ -30,7 +30,8 @@
   z-index: 1;
 }
 
-.submitBtn {
+.submitBtn,
+.disabled {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
@@ -40,6 +41,11 @@
   margin-top: 24px;
   margin-bottom: 12px;
   cursor: pointer;
+}
+
+.disabled {
+  background-color: #0535f7;
+  cursor: not-allowed;
 }
 
 .register {

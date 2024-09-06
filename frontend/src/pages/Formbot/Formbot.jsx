@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { createFormbot, updateFormbot, fetchFormbot } from "../../api/formbot";
+import { useSelector } from "react-redux";
+
+import { fetchFormbot } from "../../api/formbot";
 import { isLength, isURL } from "validator";
 import classes from "./Formbot.module.css";
 import checkIcon from "../../assets/check.svg";
 import Flow from "../../components/Flow/Flow";
 import Response from "../../components/Response/Response";
 import Theme from "../../components/Theme/Theme";
+import { useDispatch } from "react-redux";
+import {
+  createFormbotAsync,
+  selectFolderStatus,
+  updateFormbotAsync,
+} from "../../store/folder-slice";
+import Skeleton from "../../components/Skeleton/Skeleton";
 
 export default function Formbot() {
   const { id } = useParams();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [folder, setFolder] = useState(searchParams.get("folder"));
-
-  const [tab, setTab] = useState("Flow");
+  const tab = searchParams.get("tab") || "Flow";
+  // const [tab, setTab] = useState("Flow");
 
   const [formName, setFormName] = useState("");
   const [messages, setMessages] = useState([]);
@@ -25,13 +33,16 @@ export default function Formbot() {
 
   const [copied, setCopied] = useState(false);
 
-  const [saving, setSaving] = useState(false);
-
+  const status = useSelector(selectFolderStatus);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (id !== "new") {
+        setIsFetching(true);
         try {
           const response = await fetchFormbot(id);
           const formbot = response.data.data;
@@ -42,6 +53,8 @@ export default function Formbot() {
           setFolder(formbot.folder);
         } catch (err) {
           toast(err.message);
+        } finally {
+          setIsFetching(false);
         }
       }
     })();
@@ -74,12 +87,12 @@ export default function Formbot() {
 
   const handleSave = async () => {
     if (formName.length === 0) {
-      toast("Enter form name!");
+      toast.error("Enter form name!");
       return;
     }
 
     if (messages.length === 0) {
-      toast("Add at least one message");
+      toast.error("Add at least one message");
       return;
     }
 
@@ -109,8 +122,6 @@ export default function Formbot() {
       return;
     }
 
-    setSaving(true);
-
     const data = {
       name: formName,
       messages,
@@ -118,17 +129,39 @@ export default function Formbot() {
       folder,
     };
 
-    if (id === "new") {
-      const response = await createFormbot(data);
-      const newFormbotId = response.data.data._id;
-      navigate(`/formbot/${newFormbotId}`);
-      toast("Formbot saved!");
-    } else {
-      await updateFormbot(data, id);
-      toast("Formbot updated!");
-    }
+    let toastId;
 
-    setSaving(false);
+    try {
+      if (id === "new") {
+        toastId = toast.loading("Creating formbot");
+        const response = await dispatch(createFormbotAsync(data)).unwrap();
+        const newFormbotId = response.data._id;
+        navigate(`/formbots/${newFormbotId}`);
+        toast.update(toastId, {
+          render: "Formbot created!",
+          type: "success",
+          isLoading: false,
+          autoClose: true,
+        });
+      } else {
+        toastId = toast.loading("Saving formbot");
+        await dispatch(updateFormbotAsync({ data, id })).unwrap();
+        toast.update(toastId, {
+          render: "Formbot saved!",
+          type: "success",
+          isLoading: false,
+          autoClose: true,
+        });
+      }
+    } catch (err) {
+      console.log({ err });
+      toast.update(toastId, {
+        render: ` Formbot ${id === "new" ? "creation" : "saving"} failed!`,
+        type: "error",
+        isLoading: false,
+        autoClose: true,
+      });
+    }
   };
 
   const handleCopy = async () => {
@@ -154,6 +187,7 @@ export default function Formbot() {
         handleAddMessage={handleAddMessage}
         handleValueChange={handleValueChange}
         handleDelete={handleDelete}
+        isFetching={isFetching}
       />
     );
   } else if (tab === "Theme") {
@@ -167,19 +201,24 @@ export default function Formbot() {
       <div className={classes.header}>
         {copied && (
           <p className={classes.copied}>
-            <img src={checkIcon} alt="" />
+            <img src={checkIcon} alt="Check icon" />
             <span>Link Copied</span>
           </p>
         )}
-        <input
-          type="text"
-          placeholder="Enter Form Name"
-          value={formName}
-          onChange={(event) => setFormName(event.target.value)}
-          className={`${classes.formnameInput} ${
-            tab !== "Flow" ? classes.hidden : ""
-          }`}
-        />
+        {isFetching ? (
+          <Skeleton height={28} width={250} count={1} />
+        ) : (
+          <input
+            type="text"
+            placeholder="Enter Form Name"
+            value={formName}
+            onChange={(event) => setFormName(event.target.value)}
+            className={`${classes.formnameInput} ${
+              tab !== "Flow" ? classes.hidden : ""
+            }`}
+          />
+        )}
+
         <ul className={classes.tabBtns}>
           {["Flow", "Theme", "Response"].map((el) => (
             <li key={el}>
@@ -187,7 +226,14 @@ export default function Formbot() {
                 className={`${classes.tabBtn} ${
                   tab === el ? classes.tabBtnActive : ""
                 }`}
-                onClick={() => setTab(el)}
+                onClick={() => {
+                  // setTab(el);
+                  const params = { tab: el };
+                  if (id === "new") {
+                    params.folder = folder;
+                  }
+                  setSearchParams(params);
+                }}
               >
                 {el}
               </button>
@@ -209,9 +255,9 @@ export default function Formbot() {
             <button
               onClick={handleSave}
               className={classes.saveBtn}
-              disabled={saving}
+              disabled={status === "loading" || isFetching}
             >
-              {saving ? "Saving..." : "Save"}
+              {status === "loading" ? "Saving..." : "Save"}
             </button>
           </li>
 

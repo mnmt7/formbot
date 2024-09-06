@@ -1,3 +1,5 @@
+import { useParams } from "react-router-dom";
+
 import Message from "../Message/Message";
 import classes from "./Flow.module.css";
 import image from "../../assets/image.svg";
@@ -12,9 +14,8 @@ import phone from "../../assets/phone.png";
 import date from "../../assets/date.png";
 import rating from "../../assets/rating.png";
 import button from "../../assets/button.svg";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import Skeleton from "../Skeleton/Skeleton";
+import { useState } from "react";
 
 const bubbles = [
   { type: "text", icon: textBubble },
@@ -38,8 +39,10 @@ export default function Flow({
   handleAddMessage,
   handleValueChange,
   handleDelete,
+  isFetching,
 }) {
   const { id } = useParams();
+  const [shouldScroll, setShouldScroll] = useState(false);
 
   return (
     <div className={classes.main}>
@@ -50,9 +53,10 @@ export default function Flow({
             {bubbles.map((el) => (
               <li key={"bubble-" + el.type}>
                 <button
-                  onClick={() =>
-                    handleAddMessage({ type: "bubble", valueType: el.type })
-                  }
+                  onClick={() => {
+                    handleAddMessage({ type: "bubble", valueType: el.type });
+                    setShouldScroll(true);
+                  }}
                   className={classes.messageBtn}
                 >
                   <img src={el.icon} alt="" className={classes.messageLogo} />
@@ -69,9 +73,10 @@ export default function Flow({
             {inputs.map((el) => (
               <li key={"input-" + el.type}>
                 <button
-                  onClick={() =>
-                    handleAddMessage({ type: "input", valueType: el.type })
-                  }
+                  onClick={() => {
+                    handleAddMessage({ type: "input", valueType: el.type });
+                    setShouldScroll(true);
+                  }}
                   className={classes.messageBtn}
                 >
                   <img src={el.icon} alt="" className={classes.messageLogo} />
@@ -88,19 +93,39 @@ export default function Flow({
             <img src={startIcon} alt="Start Icon" />
             <span className={classes.startText}>Start</span>
           </li>
-          {messages.slice(id === "new" ? 0 : 4).map((message, idx) => (
-            <Message
-              key={idx}
-              message={message}
-              onChange={(event) =>
-                handleValueChange(
-                  id === "new" ? idx : idx + 4,
-                  event.target.value
-                )
-              }
-              onDelete={() => handleDelete(id === "new" ? idx : idx + 4)}
-            />
-          ))}
+          {isFetching ? (
+            <Skeleton width={300} height={110} count={4} />
+          ) : (
+            // messages.slice(id === "new" ? 0 : 4)
+            messages.map((message, idx) => (
+              <Message
+                key={idx}
+                message={message}
+                onChange={(event) => {
+                  handleValueChange(
+                    // id === "new" ? idx : idx + 4
+                    idx,
+                    event.target.value
+                  );
+                  setShouldScroll(false);
+                }}
+                onDelete={() => {
+                  handleDelete(
+                    idx
+                    // id === "new" ? idx : idx + 4
+                  );
+                  setShouldScroll(false);
+                }}
+                isLast={
+                  idx === messages.length - 1
+                  // id === "new"
+                  //   ? idx === messages.length - 1
+                  //   : idx + 4 === messages.length - 1
+                }
+                shouldScroll={shouldScroll}
+              />
+            ))
+          )}
         </ul>
       </div>
     </div>

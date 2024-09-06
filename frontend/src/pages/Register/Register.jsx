@@ -64,7 +64,7 @@ export default function Register() {
     try {
       await dispatch(registerAsync(data)).unwrap();
     } catch (err) {
-      toast(err.message);
+      toast.error(err.message);
     }
   };
 

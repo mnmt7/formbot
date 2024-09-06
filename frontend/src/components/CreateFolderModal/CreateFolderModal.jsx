@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import classes from "./CreateFolderModal.module.css";
 import Input from "../Input/Input";
 import { createFolderAsync } from "../../store/folder-slice";
+import { toast } from "react-toastify";
 
 const CreateModal = forwardRef(function CreateModal({ parent }, ref) {
   const [name, setName] = useState("");
@@ -28,13 +29,17 @@ const CreateModal = forwardRef(function CreateModal({ parent }, ref) {
 
   const dispatch = useDispatch();
 
-  const handleCreateFolder = () => {
+  const handleCreateFolder = async () => {
     if (name.length === 0) {
       setNameError(true);
       return;
     }
 
-    dispatch(createFolderAsync({ name, parent }));
+    toast.promise(dispatch(createFolderAsync({ name, parent })).unwrap(), {
+      pending: "Creating folder...",
+      success: "Folder created",
+      error: "Folder creation failed",
+    });
     closeModal();
   };
 

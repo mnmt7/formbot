@@ -35,6 +35,10 @@
   margin-top: 12px;
 }
 
+.disabled {
+  cursor: not-allowed;
+}
+
 .logoutBtn {
   position: absolute;
   left: 30px;
